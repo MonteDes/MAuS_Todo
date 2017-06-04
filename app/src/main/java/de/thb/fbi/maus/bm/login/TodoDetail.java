@@ -61,4 +61,10 @@ public class TodoDetail extends AppCompatActivity {
 
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        processItemSave(accessor, (EditText) findViewById(R.id.detailsName), (EditText)findViewById(R.id.detailsDescription));
+    }
 }
