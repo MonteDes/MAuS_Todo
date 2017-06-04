@@ -47,6 +47,12 @@ public class TodoDetail extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        processItemSave(accessor, (EditText) findViewById(R.id.detailsName), (EditText)findViewById(R.id.detailsDescription));
+    }
+
     protected void processItemSave(TodoItemAccessor accessor, EditText name, EditText desc) {
         accessor.readItem().setName(name.getText().toString());
         accessor.readItem().setDesciption(desc.getText().toString());
@@ -62,9 +68,5 @@ public class TodoDetail extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        processItemSave(accessor, (EditText) findViewById(R.id.detailsName), (EditText)findViewById(R.id.detailsDescription));
-    }
+
 }
