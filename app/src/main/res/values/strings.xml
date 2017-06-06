@@ -1,6 +1,9 @@
 <resources>
+    <!--General-->
     <string name="app_name">Todo List</string>
     <string name="default_todo">New Todo %d</string>
+
+    <!--Login-->
     <string name="login_button">Login</string>
     <string name="email_NoEmail">The entered Text is not a valid Email-Address</string>
     <string name="password_Invalid">The entered Password is not valid. It has to be a Sequence of<b> 6 digits</b></string>
@@ -9,8 +12,11 @@
     <string name="password_hint">Password</string>
     <string name="email_hint">Email or Username</string>
 
-
+    <!--Todo Detail Activity-->
     <string name="delete_button">Delete</string>
     <string name="save_button">Save</string>
     <string name="description_hint">Put your description in here.</string>
+    <string name="detail_pick_dueDate">Due Date</string>
+    <string name="detail_switch_done">Done</string>
+
 </resources>
