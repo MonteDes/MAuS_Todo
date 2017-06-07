@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 public class TodoDetail extends AppCompatActivity {
 
@@ -130,7 +131,7 @@ public class TodoDetail extends AppCompatActivity {
         importButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!accessor.readItem().isImportant()) {
+                if(!imp) {
                     importButton.setBackgroundResource(R.mipmap.favorite_true);
                     imp = true;
                 } else {

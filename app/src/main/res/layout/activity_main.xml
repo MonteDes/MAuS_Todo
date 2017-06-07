@@ -64,6 +64,7 @@
 
     <Button
         android:text="@string/login_button"
+        android:enabled="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elegantTextHeight="true"

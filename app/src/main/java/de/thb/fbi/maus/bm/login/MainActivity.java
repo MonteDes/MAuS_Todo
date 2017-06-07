@@ -19,6 +19,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean emailCheck = false, passwCheck = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
         final TextView progressBarText = (TextView)findViewById(R.id.myTextProgress);
 
-        // Ueberpruefen, ob email syntaktisch korrekt
+        // check syntax of email
         email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -44,16 +45,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Info, dass Logindaten falsch sind, ausblenden
+                // hide information that entered credentials are wrong
                 wrongLoginData.setVisibility(View.GONE);
 
-                // Faelle fuer Email Syntax behandeln
-
-                if(!Patterns.EMAIL_ADDRESS.matcher(s).matches() && s.length() > 0)
+                // check the syntax
+                if(!Patterns.EMAIL_ADDRESS.matcher(s).matches() && s.length() > 0) {
                     wrongEmail.setVisibility(View.VISIBLE);
+                    emailCheck = false;
 
-                if(Patterns.EMAIL_ADDRESS.matcher(s).matches())
+                }
+
+                if(Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
                     wrongEmail.setVisibility(View.GONE);
+                    emailCheck = true;
+                }
+
+
+                loginButton.setEnabled(emailCheck && passwCheck);
             }
 
             @Override
@@ -62,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Ueberpruefen, ob Passwort Laenge korrekt
+        // check password length
         password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -71,15 +79,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Info, dass Logindaten falsch sind, ausblenden
+                // hide information that credentials are wrong
                 wrongLoginData.setVisibility(View.GONE);
 
-                //Passwort Syntax Uberpruefen
-
-                if(s.length() < 6 && s.length() > 0)
+                // check password length
+                if(s.length() < 6 && s.length() > 0) {
                     wrongPassword.setVisibility(View.VISIBLE);
-                if(s.length() == 6)
+                    passwCheck = false;
+                }
+                if(s.length() == 6) {
                     wrongPassword.setVisibility(View.GONE);
+                    passwCheck = true;
+                }
+
+
+                loginButton.setEnabled(emailCheck && passwCheck);
             }
 
             @Override
@@ -90,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton.setBackgroundColor(getResources().getColor(R.color.lightBlue));
 
-        // Daten bei Klick des Buttons ueberpruefen
+        // check credentials on click
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

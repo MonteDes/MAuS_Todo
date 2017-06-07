@@ -82,7 +82,7 @@ public class SQLiteDBHelper {
         queryBuilder.setTables(TABNAME);
 
         String[] asColumnsToReturn =  {COL_ID, COL_IMPORTANT, COL_NAME, COL_DESCRIPTION, COL_DUEDATE, COL_DONE};
-        String ordering = COL_IMPORTANT + " DESC, " + COL_DONE + " ASC, " + COL_DUEDATE + " ASC";
+        String ordering = COL_DONE + " ASC, " + COL_IMPORTANT + " DESC, " + COL_DUEDATE + " ASC";
 
         Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
 
