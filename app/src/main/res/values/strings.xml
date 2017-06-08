@@ -1,6 +1,6 @@
 <resources>
     <!--General-->
-    <string name="app_name">Todo List</string>
+    <string name="app_name">Malbolge - Todo</string>
     <string name="default_todo">New Todo %d</string>
 
     <!--Login-->

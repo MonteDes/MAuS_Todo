@@ -5,7 +5,10 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
+import android.icu.util.GregorianCalendar;
+import android.icu.util.TimeZone;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,10 +152,18 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
 
             @Override
             public void bindView(View view, final Context context, final Cursor cursor) {
+                GregorianCalendar calendar = new GregorianCalendar(TimeZone.GMT_ZONE);
                 TextView todoName = (TextView) view.findViewById(R.id.todo_name_mainView);
                 Button importButt = (Button) view.findViewById(R.id.important_button);
 
                 todoName.setText(cursor.getString(cursor.getColumnIndex(SQLiteDBHelper.COL_NAME)));
+                System.out.println(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_DUEDATE)) + " < " + calendar.getTimeInMillis());
+                if(cursor.getLong(cursor.getColumnIndex(SQLiteDBHelper.COL_DUEDATE)) < calendar.getTimeInMillis()) {
+                    todoName.setTextColor(context.getColor(R.color.redAttention));
+                }
+                if(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_DONE)) != 0) {
+                    todoName.setTextColor(context.getColor(R.color.lightGrey));
+                }
                 importButt.setTag(cursor.getPosition());
 
                 if(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_IMPORTANT)) == 0) {

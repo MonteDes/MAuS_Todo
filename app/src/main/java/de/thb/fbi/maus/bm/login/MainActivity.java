@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setBackgroundColor(getResources().getColor(R.color.lightGrey));
         progressBar.setScrollBarFadeDuration(3000);
 
-        progressBarText.setBackgroundColor(getResources().getColor(R.color.lightGrey));
+        progressBarText.setBackgroundColor(getColor(R.color.lightGrey));
     }
 private class ProgressSync extends AsyncTask<Void, Void, Void>{
     final ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);

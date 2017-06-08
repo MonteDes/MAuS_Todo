@@ -39,7 +39,6 @@ public class TodoDetail extends AppCompatActivity {
         final EditText nameEdit = (EditText) findViewById(R.id.detailsName);
         final Switch doneSwitch = (Switch) findViewById(R.id.switch_Done);
 
-        final Button dueDateButton = (Button) findViewById(R.id.button_due_date);
         final TextView dueDateEdit = (TextView) findViewById(R.id.detailsDueDate);
         final Button importButton = (Button) findViewById(R.id.details_button_favorite);
 
@@ -86,7 +85,7 @@ public class TodoDetail extends AppCompatActivity {
         }
 
         // set trigger to open up the DatePicker
-        dueDateButton.setOnClickListener(new View.OnClickListener() {
+        dueDateEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -101,9 +100,6 @@ public class TodoDetail extends AppCompatActivity {
         datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-                Date date = new Date(calendar.getTimeInMillis());
-
                  gYear = year;
                  gMonth = month;
                  gDay = dayOfMonth;
