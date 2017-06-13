@@ -18,6 +18,11 @@ public interface TodoItemCRUDAccessor {
     @GET
     public List<TodoItem> readAllItems();
 
+
+    @GET
+    @Path("/{itemId}")
+    TodoItem readItem(@PathParam("itemId") long itemId);
+
     @POST
     public TodoItem createItem(TodoItem item);
 
@@ -25,6 +30,6 @@ public interface TodoItemCRUDAccessor {
     public TodoItem updateItem(TodoItem item);
 
     @DELETE
-    @Path("/itemId")
-    public boolean deleteItem(TodoItem item);
+    @Path("/{itemId}")
+    public boolean deleteItem(@PathParam("itemId") long itemId);
 }
