@@ -90,9 +90,13 @@ public class TodoDetail extends AppCompatActivity {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
+                //inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(),0);
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
 
                 datePickerDialog.show();
+
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN
+                );
             }
         });
 

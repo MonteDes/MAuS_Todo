@@ -2,6 +2,7 @@ package de.thb.fbi.maus.bm.login;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -45,7 +46,7 @@ public class Todos extends AppCompatActivity {
      //Get resources from layout
      final Resources res = getResources();
      listView = (ListView) findViewById(R.id.list_view);
-     final Button newButton = (Button) findViewById(R.id.newTodo);
+     final FloatingActionButton newButton = (FloatingActionButton) findViewById(R.id.newTodo);
 
      accessor = new CursorAdapterTodoItemListAccessor();
      accessor.setActivity(this);
