@@ -17,6 +17,10 @@ import java.util.logging.Logger;
  *
  * generateStrongPasswordHash(), getSalt() and toHex() addapted from
  * http://howtodoinjava.com/security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/#PBKDF2WithHmacSHA1
+ *
+ *
+ * host: 34.212.28.35
+ * port: 4300
  */
 public class CredentialsManager {
     private int port;
