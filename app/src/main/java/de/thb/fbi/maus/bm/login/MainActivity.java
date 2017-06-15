@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import de.thb.fbi.maus.bm.login.accessor.intent.CredentialsManager;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Ressource besorgen
         final Button loginButton = (Button)findViewById(R.id.button);
+        final Button signUpButton = (Button)findViewById(R.id.signUp_button);
         final EditText email = (EditText)findViewById(R.id.editText);
         final EditText password = (EditText)findViewById(R.id.editText1);
         final TextView wrongEmail = (TextView)findViewById(R.id.emailError);
@@ -115,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CredentialsManager credentialsManager = new CredentialsManager(4300,"34.212.28.35");
+
+                credentialsManager.addCredentials(email.getText().toString(), password.getText().toString());
+            }
+        });
+
         progressBar.setTransitionName("Checking Login Data");
         progressBar.setBackgroundColor(getResources().getColor(R.color.lightGrey));
         progressBar.setScrollBarFadeDuration(3000);
@@ -141,10 +152,18 @@ private class ProgressSync extends AsyncTask<Void, Void, Void>{
         }catch (InterruptedException e){
             System.err.print(e.getMessage());
         }
-        if (email.getText().toString().equals("falsch@falsch.de") && password.getText().toString().equals("999999")){
+        /*if (email.getText().toString().equals("falsch@falsch.de") && password.getText().toString().equals("999999")){
             wrongLoginData.setVisibility(View.VISIBLE);
         }else{
             startActivity(new Intent(MainActivity.this, Todos.class));
+        }
+        */
+        CredentialsManager credentialsManager = new CredentialsManager(4300, "34.212.28.35");
+
+        if(credentialsManager.checkCredentials(email.getText().toString(), password.getText().toString())) {
+            startActivity(new Intent(MainActivity.this, Todos.class));
+        } else {
+            wrongLoginData.setVisibility(View.VISIBLE);
         }
         progressBar.setVisibility(View.INVISIBLE);
         progressBarText.setVisibility(View.INVISIBLE);

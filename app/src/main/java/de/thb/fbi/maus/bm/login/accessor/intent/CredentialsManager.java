@@ -54,6 +54,7 @@ public class CredentialsManager {
         if(in.readLine().equals(-1))
             Log.i(logger, "credential-set created");
 
+        con.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -79,12 +80,16 @@ public class CredentialsManager {
             out.write(generateStrongPasswordHash(password));
 
             if(in.readLine().equals(0)) {
+                con.close();
                 Log.i(logger, "result: false");
                 return false;
             } else {
+                con.close();
                 Log.i(logger, "result: true");
                 return true;
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
