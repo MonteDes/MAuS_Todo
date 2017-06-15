@@ -1,5 +1,6 @@
 package de.thb.fbi.maus.bm.login;
 
+import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -28,15 +29,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Ressource besorgen
-        final Button loginButton = (Button)findViewById(R.id.button);
-        final Button signUpButton = (Button)findViewById(R.id.signUp_button);
-        final EditText email = (EditText)findViewById(R.id.editText);
-        final EditText password = (EditText)findViewById(R.id.editText1);
-        final TextView wrongEmail = (TextView)findViewById(R.id.emailError);
-        final TextView wrongPassword = (TextView)findViewById(R.id.passwordError);
-        final TextView wrongLoginData = (TextView)findViewById(R.id.wrongLoginData);
-        final ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
-        final TextView progressBarText = (TextView)findViewById(R.id.myTextProgress);
+        final Button loginButton = (Button) findViewById(R.id.button);
+        final Button signUpButton = (Button) findViewById(R.id.signUp_button);
+        final EditText email = (EditText) findViewById(R.id.editText);
+        final EditText password = (EditText) findViewById(R.id.editText1);
+        final TextView wrongEmail = (TextView) findViewById(R.id.emailError);
+        final TextView wrongPassword = (TextView) findViewById(R.id.passwordError);
+        final TextView wrongLoginData = (TextView) findViewById(R.id.wrongLoginData);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        final TextView progressBarText = (TextView) findViewById(R.id.myTextProgress);
 
         // check syntax of email
         email.addTextChangedListener(new TextWatcher() {
@@ -51,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
                 wrongLoginData.setVisibility(View.GONE);
 
                 // check the syntax
-                if(!Patterns.EMAIL_ADDRESS.matcher(s).matches() && s.length() > 0) {
+                if (!Patterns.EMAIL_ADDRESS.matcher(s).matches() && s.length() > 0) {
                     wrongEmail.setVisibility(View.VISIBLE);
                     emailCheck = false;
 
                 }
 
-                if(Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
+                if (Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
                     wrongEmail.setVisibility(View.GONE);
                     emailCheck = true;
                 }
@@ -85,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
                 wrongLoginData.setVisibility(View.GONE);
 
                 // check password length
-                if(s.length() < 6 && s.length() > 0) {
+                if (s.length() < 6 && s.length() > 0) {
                     wrongPassword.setVisibility(View.VISIBLE);
                     passwCheck = false;
                 }
-                if(s.length() == 6) {
+                if (s.length() == 6) {
                     wrongPassword.setVisibility(View.GONE);
                     passwCheck = true;
                 }
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!TextUtils.isEmpty(email.getText()) && !TextUtils.isEmpty(password.getText()) &&
+                if (!TextUtils.isEmpty(email.getText()) && !TextUtils.isEmpty(password.getText()) &&
                         wrongEmail.getVisibility() == View.GONE && wrongPassword.getVisibility() == View.GONE) {
                     new ProgressSync().execute();
                 }
@@ -120,9 +121,7 @@ public class MainActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CredentialsManager credentialsManager = new CredentialsManager(4300,"34.212.28.35");
-
-                credentialsManager.addCredentials(email.getText().toString(), password.getText().toString());
+                new SignUpSync().execute();
             }
         });
 
@@ -132,47 +131,67 @@ public class MainActivity extends AppCompatActivity {
 
         progressBarText.setBackgroundColor(getColor(R.color.lightGrey));
     }
-private class ProgressSync extends AsyncTask<Void, Void, Void>{
-    final ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
-    final TextView progressBarText = (TextView)findViewById(R.id.myTextProgress);
-    final EditText email = (EditText)findViewById(R.id.editText);
-    final EditText password = (EditText)findViewById(R.id.editText1);
-    final TextView wrongLoginData = (TextView)findViewById(R.id.wrongLoginData);
 
-    @Override
-    protected Void doInBackground(Void... voids) {
+    private class ProgressSync extends AsyncTask<Void, Void, Void> {
+        private boolean check = false;
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        final TextView progressBarText = (TextView) findViewById(R.id.myTextProgress);
+        final EditText email = (EditText) findViewById(R.id.editText);
+        final EditText password = (EditText) findViewById(R.id.editText1);
+        final TextView wrongLoginData = (TextView) findViewById(R.id.wrongLoginData);
 
-        return null;
-    }
-    @Override
-    protected void onPostExecute(Void result){
+        @Override
+        protected Void doInBackground(Void... voids) {
+            CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
 
-        try {
-            Thread.sleep(3000);
-        }catch (InterruptedException e){
-            System.err.print(e.getMessage());
+            if (credentialsManager.checkCredentials(email.getText().toString(), password.getText().toString())) {
+                startActivity(new Intent(MainActivity.this, Todos.class));
+            } else {
+                check = true;
+            }
+            return null;
         }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            if(check)
+                wrongLoginData.setVisibility(View.VISIBLE);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                System.err.print(e.getMessage());
+            }
         /*if (email.getText().toString().equals("falsch@falsch.de") && password.getText().toString().equals("999999")){
             wrongLoginData.setVisibility(View.VISIBLE);
         }else{
             startActivity(new Intent(MainActivity.this, Todos.class));
         }
         */
-        CredentialsManager credentialsManager = new CredentialsManager(4300, "34.212.28.35");
 
-        if(credentialsManager.checkCredentials(email.getText().toString(), password.getText().toString())) {
-            startActivity(new Intent(MainActivity.this, Todos.class));
-        } else {
-            wrongLoginData.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+            progressBarText.setVisibility(View.INVISIBLE);
         }
-        progressBar.setVisibility(View.INVISIBLE);
-        progressBarText.setVisibility(View.INVISIBLE);
-    }
-    @Override
-    protected void onPreExecute(){
-        progressBar.setVisibility(View.VISIBLE);
-        progressBarText.setVisibility(View.VISIBLE);
-    }
-}
-}
 
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBarText.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    private class SignUpSync extends AsyncTask<Void, Void, Void> {
+        final EditText email = (EditText) findViewById(R.id.editText);
+        final EditText password = (EditText) findViewById(R.id.editText1);
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
+
+            credentialsManager.addCredentials(email.getText().toString(), password.getText().toString());
+            return null;
+        }
+    }
+}

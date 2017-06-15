@@ -4,7 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.icu.text.SimpleDateFormat;
+
+import android.icu.util.TimeZone;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +15,11 @@ import android.widget.*;
 import de.thb.fbi.maus.bm.login.accessor.TodoItemAccessor;
 import de.thb.fbi.maus.bm.login.accessor.intent.IntentTodoItemAccessor;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
-import java.util.logging.Logger;
+import java.util.Locale;
 
 public class TodoDetail extends AppCompatActivity {
 
@@ -43,7 +44,6 @@ public class TodoDetail extends AppCompatActivity {
         final Button importButton = (Button) findViewById(R.id.details_button_favorite);
 
         final EditText descEdit = (EditText) findViewById(R.id.detailsDescription);
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(this);
 
         //initialize TimePicker and save picked values
         final TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -51,13 +51,24 @@ public class TodoDetail extends AppCompatActivity {
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 gHour = hourOfDay;
                 gMinute = minute;
-                android.icu.util.GregorianCalendar calendar = new android.icu.util.GregorianCalendar(android.icu.util.TimeZone.GMT_ZONE);
-                calendar.set(gYear, gMonth, gDay, gHour, gMinute);
+                GregorianCalendar calendar = new GregorianCalendar(gYear,gMonth, gDay, gHour, gMinute);
                 dueDate = calendar.getTimeInMillis();
 
                 updateTime();
             }
+
         },c.get(Calendar.HOUR), c.get(Calendar.MINUTE), false );
+
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(TodoDetail.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                gYear = year;
+                gMonth = month;
+                gDay = dayOfMonth;
+
+                timePickerDialog.show();
+            }
+        },gDay, gMonth, gDay );
 
         final Button saveButton = (Button) findViewById(R.id.buttonSave);
         final Button deleteButton = (Button) findViewById(R.id.buttonDelete);
@@ -100,17 +111,7 @@ public class TodoDetail extends AppCompatActivity {
             }
         });
 
-        //save picked values
-        datePickerDialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                 gYear = year;
-                 gMonth = month;
-                 gDay = dayOfMonth;
 
-                 timePickerDialog.show();
-            }
-        });
 
 
         // save item and return to list acitivty

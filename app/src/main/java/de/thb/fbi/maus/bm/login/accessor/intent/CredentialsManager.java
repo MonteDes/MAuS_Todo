@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * http://howtodoinjava.com/security/how-to-generate-secure-password-hash-md5-sha-pbkdf2-bcrypt-examples/#PBKDF2WithHmacSHA1
  *
  *
- * host: 34.212.28.35
+ * host: 54.202.56.214
  * port: 4300
  */
 public class CredentialsManager {
@@ -42,16 +42,19 @@ public class CredentialsManager {
         Socket con = establishConnection();
         try {
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+        OutputStream out = con.getOutputStream();
 
         //request credential creation
-        out.write(REQUEST_CREATION);
+        out.write((REQUEST_CREATION + "\r\n").getBytes());
+        out.flush();
 
         //send credentials to add
-        out.write(email);
-        out.write(generateStrongPasswordHash(password));
+        out.write((email + "\r\n").getBytes());
+        out.flush();
+        out.write((generateStrongPasswordHash(password) + "\r\n").getBytes());
+        out.flush();
 
-        if(in.readLine().equals(-1))
+        if(in.readLine().equals(2))
             Log.i(logger, "credential-set created");
 
         con.close();
@@ -70,14 +73,17 @@ public class CredentialsManager {
         Socket con = establishConnection();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+            OutputStream out = con.getOutputStream();
 
             // status for check
-            out.write(REQUEST_CHECK);
+            out.write((REQUEST_CHECK + "\r\n").getBytes());
+            out.flush();
 
             //write email and password to check;
-            out.write(email);
-            out.write(generateStrongPasswordHash(password));
+            out.write((email + "\r\n").getBytes());
+            out.flush();
+            out.write((generateStrongPasswordHash(password) + "\r\n").getBytes());
+            out.flush();
 
             if(in.readLine().equals(0)) {
                 con.close();
