@@ -16,6 +16,11 @@
 
     <!--Todo List Activity-->
     <string name="todo_nameANDduedate" formatted="false">%s (%s)</string>
+    <string name="ordering">ordering:</string>
+    <string-array name="sort_options">
+        <item>done - important - due-date</item>
+        <item>done - due-date - important</item>
+    </string-array>
 
     <!--Todo Detail Activity-->
     <string name="delete_button">Delete</string>

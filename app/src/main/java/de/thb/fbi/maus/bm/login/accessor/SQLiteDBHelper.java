@@ -16,6 +16,7 @@ import java.util.Locale;
 public class SQLiteDBHelper {
 
     private final Activity mActivity;
+    public static int ordering_method = 0;
 
     protected static final String logger = SQLiteDBHelper.class.getName();
 
@@ -82,7 +83,12 @@ public class SQLiteDBHelper {
         queryBuilder.setTables(TABNAME);
 
         String[] asColumnsToReturn =  {COL_ID, COL_IMPORTANT, COL_NAME, COL_DESCRIPTION, COL_DUEDATE, COL_DONE};
-        String ordering = COL_DONE + " ASC, " + COL_IMPORTANT + " DESC, " + COL_DUEDATE + " ASC";
+        String ordering;
+        if(ordering_method == 0) {
+            ordering = COL_DONE + " ASC, " + COL_IMPORTANT + " DESC, " + COL_DUEDATE + " ASC";
+        } else {
+            ordering = COL_DONE + " ASC, " + COL_DUEDATE + " ASC, " + COL_IMPORTANT + " DESC";
+        }
 
         Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
 
