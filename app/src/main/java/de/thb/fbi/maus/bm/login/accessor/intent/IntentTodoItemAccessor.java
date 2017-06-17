@@ -20,7 +20,7 @@ public class IntentTodoItemAccessor extends AbstractActivityDataAccessor impleme
     }
 
     @Override
-    public void writeitem() {
+    public void writeItem() {
         Intent returnIntent = new Intent();
 
         returnIntent.putExtra(Todos.ARG_ITEM_OBJECT, this.item);

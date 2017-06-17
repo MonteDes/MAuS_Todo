@@ -5,7 +5,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
-import android.icu.util.GregorianCalendar;
+import android.icu.text.DateTimePatternGenerator;
 import android.icu.util.TimeZone;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -20,8 +20,15 @@ import de.thb.fbi.maus.bm.login.Todos;
 import de.thb.fbi.maus.bm.login.accessor.shared.AbstractActivityDataAccessor;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Formatter;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
 /**
- * Created by Bene on 13.05.2017.
+ * @author Benedikt M
  */
 public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAccessor implements TodoItemListAccessor {
     protected static final String logger = CursorAdapterTodoItemListAccessor.class.getName();
@@ -152,24 +159,34 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
 
             @Override
             public void bindView(View view, final Context context, final Cursor cursor) {
-                GregorianCalendar calendar = new GregorianCalendar(TimeZone.GMT_ZONE);
+                GregorianCalendar calendar = new GregorianCalendar();
                 TextView todoName = (TextView) view.findViewById(R.id.todo_name_mainView);
+                CheckBox done = (CheckBox) view.findViewById(R.id.checkBox_done);
                 Button importButt = (Button) view.findViewById(R.id.important_button);
 
-                todoName.setText(cursor.getString(cursor.getColumnIndex(SQLiteDBHelper.COL_NAME)));
-                System.out.println(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_DUEDATE)) + " < " + calendar.getTimeInMillis());
-                if(cursor.getLong(cursor.getColumnIndex(SQLiteDBHelper.COL_DUEDATE)) < calendar.getTimeInMillis()) {
-                    todoName.setTextColor(context.getColor(R.color.redAttention));
-                }
-                if(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_DONE)) != 0) {
-                    todoName.setTextColor(context.getColor(R.color.lightGrey));
-                }
                 importButt.setTag(cursor.getPosition());
+                done.setTag(cursor.getPosition());
+
+                todoName.setText(String.format(context.getString(R.string.todo_nameANDduedate),
+                        cursor.getString(cursor.getColumnIndex(SQLiteDBHelper.COL_NAME)),
+                        DateFormat.getDateInstance(DateFormat.MEDIUM).format(cursor.getLong(cursor.getColumnIndex(SQLiteDBHelper.COL_DUEDATE)))));
+
+                if(cursor.getLong(cursor.getColumnIndex(SQLiteDBHelper.COL_DUEDATE)) < calendar.getTimeInMillis())
+                    todoName.setTextColor(context.getColor(R.color.redAttention));
+
+                if(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_DONE)) != 0)
+                    todoName.setTextColor(context.getColor(R.color.lightGrey));
 
                 if(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_IMPORTANT)) == 0) {
                     importButt.setBackgroundResource(R.mipmap.favorite_false);
                 } else {
                     importButt.setBackgroundResource(R.mipmap.favorite_true);
+                }
+
+                if(cursor.getInt(cursor.getColumnIndex(SQLiteDBHelper.COL_DONE)) == 0) {
+                    done.setChecked(false);
+                } else {
+                    done.setChecked(true);
                 }
 
                 importButt.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +213,26 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
 
                 });
 
+                done.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TodoItem item;
+                        item = dbHelper.createItemFromCursor((Cursor)cursorAdapter.getItem((int)v.getTag()));
+                        Log.i(logger, "Changing Done Status of Item: " + (int)v.getTag());
+                        if(!item.isDone()) {
+
+                            item.setDone(true);
+                            updateItem(item);
+
+                            Log.i(logger, "Changed Status to: done");
+                        } else {
+                            item.setDone(false);
+                            updateItem(item);
+
+                            Log.i(logger, "Changed Status to: not done");
+                        }
+                    }
+                });
             }
         };
 

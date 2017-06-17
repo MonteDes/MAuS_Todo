@@ -1,14 +1,14 @@
 package de.thb.fbi.maus.bm.login;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 
-import android.icu.util.TimeZone;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
@@ -68,7 +68,7 @@ public class TodoDetail extends AppCompatActivity {
 
                 timePickerDialog.show();
             }
-        },gDay, gMonth, gDay );
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 
         final Button saveButton = (Button) findViewById(R.id.buttonSave);
         final Button deleteButton = (Button) findViewById(R.id.buttonDelete);
@@ -125,7 +125,16 @@ public class TodoDetail extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                processItemDelete();
+                new AlertDialog.Builder(TodoDetail.this)
+                        .setMessage(R.string.delete_message)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                processItemDelete();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
             }
         });
 
@@ -152,8 +161,7 @@ public class TodoDetail extends AppCompatActivity {
                 (Switch)findViewById(R.id.switch_Done), (Button)findViewById(R.id.details_button_favorite));
     }
 
-    protected void processItemSave(TodoItemAccessor accessor, EditText name, EditText desc, long dueDate, Switch done, Button important) {
-        Drawable background = important.getBackground();
+    private void processItemSave(TodoItemAccessor accessor, EditText name, EditText desc, long dueDate, Switch done, Button important) {
 
         accessor.readItem().setName(name.getText().toString());
         accessor.readItem().setDesciption(desc.getText().toString());
@@ -170,7 +178,7 @@ public class TodoDetail extends AppCompatActivity {
         }
 
 
-        accessor.writeitem();
+        accessor.writeItem();
 
         finish();
     }
@@ -183,7 +191,7 @@ public class TodoDetail extends AppCompatActivity {
 
     private void updateTime() {
         Date d = new Date(dueDate);
-        String time = new SimpleDateFormat("MM/dd/yyyy - hh:mm").format(d) + " " +(d.getHours() < 12? "AM" : "PM");
+        String time = new SimpleDateFormat("MM/dd/yyyy - hh:mm", Locale.US).format(d) + " " +(d.getHours() < 12? "AM" : "PM");
         ((TextView)findViewById(R.id.detailsDueDate)).setText(time);
     }
 

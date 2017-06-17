@@ -9,7 +9,7 @@ import de.thb.fbi.maus.bm.login.model.TodoItem;
 public interface TodoItemAccessor {
 
     public TodoItem readItem();
-    public void writeitem();
+    public void writeItem();
     public boolean hasItem();
     public void createItem();
     public void deleteItem();

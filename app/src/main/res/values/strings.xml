@@ -1,9 +1,11 @@
 <resources>
-    <!--General-->
+    <!--Todo General-->
     <string name="app_name">Malbolge - Todo</string>
     <string name="default_todo">New Todo %d</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
-    <!--Login-->
+    <!--Todo Login-->
     <string name="login_button">Login</string>
     <string name="email_NoEmail">The entered Text is not a valid Email-Address</string>
     <string name="password_Invalid">The entered Password is not valid. It has to be a Sequence of<b> 6 digits</b></string>
@@ -12,11 +14,16 @@
     <string name="password_hint">Password</string>
     <string name="email_hint">Email or Username</string>
 
+    <!--Todo List Activity-->
+    <string name="todo_nameANDduedate" formatted="false">%s (%s)</string>
+
     <!--Todo Detail Activity-->
     <string name="delete_button">Delete</string>
     <string name="save_button">Save</string>
     <string name="description_hint">Put your description in here.</string>
     <string name="detail_pick_dueDate">Due Date</string>
     <string name="detail_switch_done">Done</string>
+    <string name="delete_dialog_title">Delete Todo</string>
+    <string name="delete_message">Are you sure you want to <b>delete</b> this Todo?</string>
 
 </resources>

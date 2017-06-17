@@ -1,8 +1,6 @@
 package de.thb.fbi.maus.bm.login;
 
-import android.content.AsyncTaskLoader;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,15 +8,12 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import de.thb.fbi.maus.bm.login.accessor.intent.CredentialsManager;
-import org.w3c.dom.Text;
+import de.thb.fbi.maus.bm.login.accessor.CredentialsManager;
 
 public class MainActivity extends AppCompatActivity {
     private boolean emailCheck = false, passwCheck = false;
@@ -126,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         progressBar.setTransitionName("Checking Login Data");
-        progressBar.setBackgroundColor(getResources().getColor(R.color.lightGrey));
+        progressBar.setBackgroundColor(this.getColor(R.color.lightGrey));
         progressBar.setScrollBarFadeDuration(3000);
 
         progressBarText.setBackgroundColor(getColor(R.color.lightGrey));
@@ -142,12 +137,21 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
+            // TODO: 16.06.2017 Implement offline/online login
+            if(true) {
+                CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
 
-            if (credentialsManager.checkCredentials(email.getText().toString(), password.getText().toString())) {
-                startActivity(new Intent(MainActivity.this, Todos.class));
+                if (credentialsManager.checkCredentials(email.getText().toString(), password.getText().toString())) {
+                    startActivity(new Intent(MainActivity.this, Todos.class));
+                } else {
+                    check = true;
+                }
             } else {
-                check = true;
+                if (email.getText().toString().equals("falsch@falsch.de") && password.getText().toString().equals("999999")){
+                    wrongLoginData.setVisibility(View.VISIBLE);
+                }else{
+                    startActivity(new Intent(MainActivity.this, Todos.class));
+                }
             }
             return null;
         }
@@ -162,12 +166,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (InterruptedException e) {
                 System.err.print(e.getMessage());
             }
-        /*if (email.getText().toString().equals("falsch@falsch.de") && password.getText().toString().equals("999999")){
-            wrongLoginData.setVisibility(View.VISIBLE);
-        }else{
-            startActivity(new Intent(MainActivity.this, Todos.class));
-        }
-        */
 
             progressBar.setVisibility(View.INVISIBLE);
             progressBarText.setVisibility(View.INVISIBLE);

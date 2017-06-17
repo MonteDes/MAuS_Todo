@@ -91,6 +91,7 @@ public class Todos extends AppCompatActivity {
 
         TodoItem item = data != null ? (TodoItem) data.getSerializableExtra(ARG_ITEM_OBJECT) : null;
 
+        // TODO: 16.06.2017 - Implement result NO_CHANGE
         Log.i(logger, "onActivityResult() called: Checking result...");
         if(requestCode == REQUEST_ITEM_DETAILS) {
             if(resultCode == RESPONSE_ITEM_EDITED) {
