@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            // TODO: 16.06.2017 Implement offline/online login
             CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
             Socket con = credentialsManager.establishConnection();
             if(con != null) {

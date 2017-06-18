@@ -64,6 +64,7 @@ public class Todos extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO: 18.06.2017 How to reload the listView? 
                 SQLiteDBHelper.ordering_method = position;
             }
 
