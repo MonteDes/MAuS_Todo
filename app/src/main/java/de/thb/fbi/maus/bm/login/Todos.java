@@ -48,18 +48,6 @@ public class Todos extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                SQLiteDBHelper.ordering_method = position;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         final ListAdapter listAdapter = accessor.getAdapter();
 
         listView.setAdapter(listAdapter);
@@ -70,6 +58,18 @@ public class Todos extends AppCompatActivity {
                 TodoItem item = accessor.getSelectedItem(position, (int) id);
 
                 processItemSelection(item);
+            }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                SQLiteDBHelper.ordering_method = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 

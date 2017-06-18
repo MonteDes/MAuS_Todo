@@ -13,6 +13,8 @@
     <string name="login_Invalid">Email or Password is not correct</string>
     <string name="password_hint">Password</string>
     <string name="email_hint">Email or Username</string>
+    <string name="no_connection_loginServer_check">No connection to Login Server. Accepted all Credentials.</string>
+    <string name="no_connection_loginServer_signup">No connection to Login Server. Accepting all Credentials.</string>
 
     <!--Todo List Activity-->
     <string name="todo_nameANDduedate" formatted="false">%s (%s)</string>

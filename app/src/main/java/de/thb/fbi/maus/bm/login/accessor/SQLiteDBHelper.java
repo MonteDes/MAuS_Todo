@@ -16,13 +16,13 @@ import java.util.Locale;
 public class SQLiteDBHelper {
 
     private final Activity mActivity;
-    public static int ordering_method = 0;
+    public static int ordering_method = 1;
 
-    protected static final String logger = SQLiteDBHelper.class.getName();
+    private static final String logger = SQLiteDBHelper.class.getName();
 
     private static final String DBNAME = "todoItems.db";
     private static final int INITIAL_DBVERSION = 0;
-    protected static final String TABNAME = "todoItems";
+    private static final String TABNAME = "todoItems";
 
     protected static final String COL_ID = "_id";
     protected static final String COL_IMPORTANT = "important";
@@ -31,7 +31,7 @@ public class SQLiteDBHelper {
     protected static final String COL_DUEDATE = "duedate";
     protected static final String COL_DONE = "done";
 
-    protected static final String TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME + " (" +
+    private static final String TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME + " (" +
             COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             COL_IMPORTANT + " TINYINT,\n" +
             COL_NAME + " TEXT,\n" +

@@ -6,7 +6,9 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.*;
 import java.math.BigInteger;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -36,10 +38,9 @@ public class CredentialsManager {
         this.host = host;
     }
 
-    public void addCredentials(String email, String password) {
+    public void addCredentials(Socket con, String email, String password) {
         Log.i(logger, "adding credentials");
 
-        Socket con = establishConnection();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             OutputStream out = con.getOutputStream();
@@ -63,10 +64,9 @@ public class CredentialsManager {
         }
     }
 
-    public boolean checkCredentials(String email, String password) {
+    public boolean checkCredentials(Socket con, String email, String password) {
         Log.i(logger, "checking credentials");
 
-        Socket con = establishConnection();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             OutputStream out = con.getOutputStream();
@@ -101,7 +101,9 @@ public class CredentialsManager {
 
     public Socket establishConnection() {
         try {
-            return new Socket(host, port);
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(host, port), 3000);
+            return socket;
 
         } catch (IOException e) {
             e.printStackTrace();

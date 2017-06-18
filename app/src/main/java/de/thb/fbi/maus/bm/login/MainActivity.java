@@ -9,11 +9,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import de.thb.fbi.maus.bm.login.accessor.CredentialsManager;
+
+import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
     private boolean emailCheck = false, passwCheck = false;
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView wrongLoginData = (TextView) findViewById(R.id.wrongLoginData);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView progressBarText = (TextView) findViewById(R.id.myTextProgress);
+
 
         // check syntax of email
         email.addTextChangedListener(new TextWatcher() {
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 loginButton.setEnabled(emailCheck && passwCheck);
+                signUpButton.setEnabled(emailCheck && passwCheck);
             }
 
             @Override
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 loginButton.setEnabled(emailCheck && passwCheck);
+                signUpButton.setEnabled(emailCheck && passwCheck);
             }
 
             @Override
@@ -128,43 +130,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class ProgressSync extends AsyncTask<Void, Void, Void> {
-        private boolean check = false;
+        private boolean check = false, connection = false;
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView progressBarText = (TextView) findViewById(R.id.myTextProgress);
         final EditText email = (EditText) findViewById(R.id.editText);
         final EditText password = (EditText) findViewById(R.id.editText1);
         final TextView wrongLoginData = (TextView) findViewById(R.id.wrongLoginData);
+        final Toast toast = Toast.makeText(MainActivity.this, R.string.no_connection_loginServer_check, Toast.LENGTH_LONG);
 
         @Override
         protected Void doInBackground(Void... voids) {
             // TODO: 16.06.2017 Implement offline/online login
-            if(true) {
-                CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
+            CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
+            Socket con = credentialsManager.establishConnection();
+            if(con != null) {
 
-                if (credentialsManager.checkCredentials(email.getText().toString(), password.getText().toString())) {
+                connection = true;
+                if (credentialsManager.checkCredentials(con, email.getText().toString(), password.getText().toString())) {
                     startActivity(new Intent(MainActivity.this, Todos.class));
                 } else {
                     check = true;
                 }
             } else {
-                if (email.getText().toString().equals("falsch@falsch.de") && password.getText().toString().equals("999999")){
-                    wrongLoginData.setVisibility(View.VISIBLE);
-                }else{
-                    startActivity(new Intent(MainActivity.this, Todos.class));
-                }
+
+                startActivity(new Intent(MainActivity.this, Todos.class));
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-
+            if(!connection)
+                toast.show();
             if(check)
                 wrongLoginData.setVisibility(View.VISIBLE);
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                System.err.print(e.getMessage());
+
+            if(connection) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    System.err.print(e.getMessage());
+                }
             }
 
             progressBar.setVisibility(View.INVISIBLE);
@@ -180,16 +186,26 @@ public class MainActivity extends AppCompatActivity {
 
 
     private class SignUpSync extends AsyncTask<Void, Void, Void> {
+        private boolean connection = false;
         final EditText email = (EditText) findViewById(R.id.editText);
         final EditText password = (EditText) findViewById(R.id.editText1);
+        final Toast toast = Toast.makeText(MainActivity.this, R.string.no_connection_loginServer_signup, Toast.LENGTH_LONG);
 
         @Override
         protected Void doInBackground(Void... voids) {
-
             CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
+            Socket con = credentialsManager.establishConnection();
 
-            credentialsManager.addCredentials(email.getText().toString(), password.getText().toString());
+            if(con != null) {
+                connection = true;
+                credentialsManager.addCredentials(con, email.getText().toString(), password.getText().toString());
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            toast.show();
         }
     }
 }

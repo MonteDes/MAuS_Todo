@@ -253,4 +253,6 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
     public void close() {
         dbHelper.close();
     }
+
+
 }
