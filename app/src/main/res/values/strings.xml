@@ -15,6 +15,7 @@
     <string name="email_hint">Email or Username</string>
     <string name="no_connection_loginServer_check">No connection to Login Server. Accepted all Credentials.</string>
     <string name="no_connection_loginServer_signup">No connection to Login Server. Accepting all Credentials.</string>
+    <string name="webservice_not_available">Webservice not available. Skipped Login.</string>
 
     <!--Todo List Activity-->
     <string name="todo_nameANDduedate" formatted="false">%s (%s)</string>

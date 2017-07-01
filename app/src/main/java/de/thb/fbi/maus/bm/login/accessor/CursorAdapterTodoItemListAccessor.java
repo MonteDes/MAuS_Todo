@@ -254,5 +254,4 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
         dbHelper.close();
     }
 
-
 }
