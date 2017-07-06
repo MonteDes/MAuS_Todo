@@ -22,7 +22,8 @@ public class SQLiteDBHelper {
 
     private static final String DBNAME = "todoItems.db";
     private static final int INITIAL_DBVERSION = 0;
-    private static final String TABNAME = "todoItems";
+    private static final String TABNAME_TODOITEMS = "todoItems";
+    private static final String TABNAME_REL_CONTACT = "contactRelation";
 
     protected static final String COL_ID = "_id";
     protected static final String COL_IMPORTANT = "important";
@@ -30,8 +31,10 @@ public class SQLiteDBHelper {
     protected static final String COL_DESCRIPTION = "description";
     protected static final String COL_DUEDATE = "duedate";
     protected static final String COL_DONE = "done";
+    protected static final String COL_REL_CONTACT = "_cid";
+    protected static final String COL_REL_TODO = "_tid";
 
-    private static final String TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME + " (" +
+    private static final String TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_TODOITEMS + " (" +
             COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             COL_IMPORTANT + " TINYINT,\n" +
             COL_NAME + " TEXT,\n" +
@@ -80,7 +83,7 @@ public class SQLiteDBHelper {
 
     public Cursor getCursor(){
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(TABNAME);
+        queryBuilder.setTables(TABNAME_TODOITEMS);
 
         String[] asColumnsToReturn =  {COL_ID, COL_IMPORTANT, COL_NAME, COL_DESCRIPTION, COL_DUEDATE, COL_DONE};
         String ordering;
@@ -114,20 +117,20 @@ public class SQLiteDBHelper {
 
     public void addItemToDB(TodoItem item) {
         ContentValues insertItem = SQLiteDBHelper.createDBTodoItem(item);
-        long itemId = this.db.insert(TABNAME, null, insertItem);
+        long itemId = this.db.insert(TABNAME_TODOITEMS, null, insertItem);
 
         item.setId(itemId);
     }
 
     public void removeItemFromDB(TodoItem item) {
         Log.i(logger, "Removing item from DB. (Item: " + item + ")");
-        this.db.delete(TABNAME, WHERE_IDENTIFY_ITEM, new String[] {String.valueOf(item.getId())});
+        this.db.delete(TABNAME_TODOITEMS, WHERE_IDENTIFY_ITEM, new String[] {String.valueOf(item.getId())});
         Log.i(logger, "Item removed from DB.");
     }
 
     public void updateItemInDB(TodoItem item) {
         Log.i(logger, "Updating item with id: " + item.getId());
-        this.db.update(TABNAME, createDBTodoItem(item), WHERE_IDENTIFY_ITEM, new String [] {String.valueOf(item.getId())});
+        this.db.update(TABNAME_TODOITEMS, createDBTodoItem(item), WHERE_IDENTIFY_ITEM, new String [] {String.valueOf(item.getId())});
         Log.i(logger, "Updated item in database");
     }
 
