@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Login.iml" filepath="$PROJECT_DIR$/Login.iml" />
       <module fileurl="file://C:\Users\netlab\Desktop\MAuS_Todo\Login.iml" filepath="C:\Users\netlab\Desktop\MAuS_Todo\Login.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MAuS_Todo.iml" filepath="$PROJECT_DIR$/MAuS_Todo.iml" />
       <module fileurl="file://C:\Users\Bene\IdeaProjects\Login\MAuS_Todo.iml" filepath="C:\Users\Bene\IdeaProjects\Login\MAuS_Todo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
