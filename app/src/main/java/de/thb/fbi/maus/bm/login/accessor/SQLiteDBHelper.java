@@ -45,7 +45,9 @@ public class SQLiteDBHelper {
             ");";
     private static final String REL_TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_REL_CONTACT + " (" +
             COL_REL_TODO + "INTEGER PRIMARY KEY,\n" +
-            COL_REL_CONTACT + "INTEGER PRIMARY KEY" +
+            COL_REL_CONTACT + "INTEGER PRIMARY KEY,\n" +
+            "PRIMARY KEY(" + COL_REL_TODO + "," + COL_REL_CONTACT + ")" +
+            "FOREIGN KEY (" + COL_REL_TODO + ") REFERENCES " + TABNAME_TODOITEMS + "(" + COL_ID + ")" +
             ");";
     private final String WHERE_IDENTIFY_ITEM = COL_ID + "=?";
 
@@ -130,6 +132,11 @@ public class SQLiteDBHelper {
         return item;
     }
 
+    public ContactRelation createRelationFromCursor(Cursor c) {
+        return new ContactRelation(c.getLong(c.getColumnIndex(COL_REL_CONTACT)),
+                c.getLong(c.getColumnIndex(COL_REL_TODO)));
+    }
+
     public void addItemToDB(TodoItem item) {
         ContentValues insertItem = SQLiteDBHelper.createDBTodoItem(item);
         long itemId = this.db.insert(TABNAME_TODOITEMS, null, insertItem);
@@ -149,6 +156,26 @@ public class SQLiteDBHelper {
         Log.i(logger, "Updated item in database");
     }
 
+    public void addRelationToDB(ContactRelation relation) {
+        Log.i(logger, "Adding Contact Relation to DB");
+        ContentValues insertRelation = SQLiteDBHelper.createDBContactRelation(relation);
+        this.db.insert(TABNAME_REL_CONTACT, null, insertRelation);
+        Log.i(logger, "Added Relation to DB");
+    }
+
+    public void removeRelationFromDB(ContactRelation relation) {
+        Log.i(logger, "Deleting Relation (CID: " + relation.getContactId() + "\tItem_ID: " + relation.getTodoId() + ") in DB");
+        this.db.delete(TABNAME_REL_CONTACT, WHERE_IDENTIFY_ITEM,
+                new String[] {String.valueOf(relation.getContactId()), String.valueOf(relation.getTodoId())});
+        Log.i(logger, "Deleted Relation from DB");
+    }
+
+    public void updateRelationInDB(ContactRelation relation) {
+        Log.i(logger, "Updating Relation (CID: " + relation.getContactId() + "\tItem_ID: " + relation.getTodoId() + ") in DB");
+        this.db.update(TABNAME_REL_CONTACT, createDBContactRelation(relation), WHERE_IDENTIFY_ITEM,
+                new String[] {String.valueOf(relation.getContactId()), String.valueOf(relation.getTodoId())});
+        Log.i(logger, "Updated Relation in DB");
+    }
     public void close() {
         this.db.close();
         Log.i(logger, "DB has been closed");
