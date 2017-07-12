@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
+import de.thb.fbi.maus.bm.login.model.ContactRelation;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
 import java.util.Locale;
@@ -34,13 +35,17 @@ public class SQLiteDBHelper {
     protected static final String COL_REL_CONTACT = "_cid";
     protected static final String COL_REL_TODO = "_tid";
 
-    private static final String TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_TODOITEMS + " (" +
+    private static final String TODO_TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_TODOITEMS + " (" +
             COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
             COL_IMPORTANT + " TINYINT,\n" +
             COL_NAME + " TEXT,\n" +
             COL_DESCRIPTION + " TEXT,\n" +
             COL_DUEDATE + " LONG,\n" +
             COL_DONE + " TINYINT" +
+            ");";
+    private static final String REL_TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_REL_CONTACT + " (" +
+            COL_REL_TODO + "INTEGER PRIMARY KEY,\n" +
+            COL_REL_CONTACT + "INTEGER PRIMARY KEY" +
             ");";
     private final String WHERE_IDENTIFY_ITEM = COL_ID + "=?";
 
@@ -56,11 +61,12 @@ public class SQLiteDBHelper {
         this.db = mActivity.openOrCreateDatabase(DBNAME, SQLiteDatabase.CREATE_IF_NECESSARY, null);
 
         if(this.db.getVersion() == INITIAL_DBVERSION) {
-            Log.i(logger, "DB Created. Creating table...");
+            Log.i(logger, "DB Created. Creating tables...");
             db.setLocale(Locale.getDefault());
             db.setVersion(INITIAL_DBVERSION + 1);
-            db.execSQL(TABLE_CREATION_QUERY);
-            Log.i(logger, "Table created");
+            db.execSQL(TODO_TABLE_CREATION_QUERY);
+            db.execSQL(REL_TABLE_CREATION_QUERY);
+            Log.i(logger, "Tables created");
         } else {
             Log.i(logger, "DB already exists.");
         }
@@ -81,6 +87,14 @@ public class SQLiteDBHelper {
         return insertItem;
     }
 
+    public static ContentValues createDBContactRelation(ContactRelation relation) {
+        ContentValues insertItem = new ContentValues();
+        insertItem.put(COL_REL_CONTACT, relation.getContactId());
+        insertItem.put(COL_REL_TODO, relation.getTodoId());
+
+        return insertItem;
+    }
+
     public Cursor getCursor(){
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(TABNAME_TODOITEMS);
@@ -94,6 +108,7 @@ public class SQLiteDBHelper {
         }
 
         Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
+
 
         return cursor;
     }
