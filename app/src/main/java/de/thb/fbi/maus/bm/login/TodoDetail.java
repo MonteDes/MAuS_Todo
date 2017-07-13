@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ public class TodoDetail extends AppCompatActivity {
         final Button importButton = (Button) findViewById(R.id.details_button_favorite);
 
         final EditText descEdit = (EditText) findViewById(R.id.detailsDescription);
+        final ImageButton imageButton = (ImageButton) findViewById(R.id.shareContacts_imageButton);
 
         //initialize TimePicker and save picked values
         final TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -171,7 +173,17 @@ public class TodoDetail extends AppCompatActivity {
                 }
             }
         });
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TodoDetail.this, ContactList.class);
+
+                startActivity(intent);
+            }
+        });
     }
+
 
 
     // save item and return to list activity

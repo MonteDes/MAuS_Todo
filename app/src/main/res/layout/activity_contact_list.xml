@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/contact_list_return_button"
+        android:id="@+id/contacts_listView"
         android:layout_alignParentEnd="true"/>
 
     <Button

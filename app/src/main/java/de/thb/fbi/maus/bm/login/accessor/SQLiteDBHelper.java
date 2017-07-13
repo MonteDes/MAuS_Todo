@@ -3,6 +3,7 @@ package de.thb.fbi.maus.bm.login.accessor;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
@@ -109,10 +110,10 @@ public class SQLiteDBHelper {
             ordering = COL_DONE + " ASC, " + COL_DUEDATE + " ASC, " + COL_IMPORTANT + " DESC";
         }
 
-        Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
+        Cursor cursor[] = {queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering) };
 
-
-        return cursor;
+        MergeCursor mergeCursor = new MergeCursor(cursor);
+        return mergeCursor;
     }
 
     public TodoItem createItemFromCursor(Cursor c) {
@@ -128,6 +129,8 @@ public class SQLiteDBHelper {
         item.setImportant(bool != 0);
         bool = c.getInt(c.getColumnIndex(COL_DONE));
         item.setDone(bool != 0);
+
+
 
         return item;
     }
