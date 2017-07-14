@@ -21,21 +21,26 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import de.thb.fbi.maus.bm.login.accessor.TodoItemAccessor;
 import de.thb.fbi.maus.bm.login.accessor.intent.IntentTodoItemAccessor;
+import de.thb.fbi.maus.bm.login.model.TodoItem;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.*;
 
 public class TodoDetail extends AppCompatActivity {
 
     private final int MY_PERMISSION_REQUEST_CONTACTS = 100;
+    private final int REQUEST_CONTACTS = 1;
+    private final int RESPONSE_BACK_PRESSED = 0;
+    private final int RESPONSE_CONTACTS_SELECTED = 1;
+
+    private final String ARG_RELATIONS = "relationsList";
 
     private IntentTodoItemAccessor accessor;
     private boolean imp;
     private long dueDate;
     private int gYear, gMonth, gDay, gHour, gMinute;
+    private TodoItem item;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Calendar c = Calendar.getInstance();
@@ -96,14 +101,15 @@ public class TodoDetail extends AppCompatActivity {
 
         //initialize existing or new item
         if(accessor.hasItem()){
-            nameEdit.setText(accessor.readItem().getName());
-            descEdit.setText(accessor.readItem().getDesciption());
-            dueDate = accessor.readItem().getDueDate();
+            this.item = accessor.readItem();
+            nameEdit.setText(item.getName());
+            descEdit.setText(item.getDesciption());
+            dueDate = item.getDueDate();
             updateTime();
 
-            doneSwitch.setChecked(accessor.readItem().isDone());
+            doneSwitch.setChecked(item.isDone());
 
-            if(accessor.readItem().isImportant()) {
+            if(item.isImportant()) {
                 importButton.setBackgroundResource(R.mipmap.favorite_true);
                 imp = true;
             } else {
@@ -188,7 +194,7 @@ public class TodoDetail extends AppCompatActivity {
                 int permissionCheck = ContextCompat.checkSelfPermission(TodoDetail.this, Manifest.permission.READ_CONTACTS);
 
                 if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUEST_CONTACTS);
                 } else if(permissionCheck == PackageManager.PERMISSION_DENIED){
                     ActivityCompat.requestPermissions(TodoDetail.this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_CONTACTS);
                 }
@@ -241,4 +247,18 @@ public class TodoDetail extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_CONTACTS) {
+            if(resultCode == RESPONSE_CONTACTS_SELECTED) {
+                long [] relations = data != null ? (long[]) data.getSerializableExtra(ARG_RELATIONS) : null;
+                if(relations != null) {
+                    for (int i = 0; i < relations.length; i++) {
+                        item.addAssociatedContact(relations[i]);
+                    }
+                }
+            }
+
+        }
+    }
 }
