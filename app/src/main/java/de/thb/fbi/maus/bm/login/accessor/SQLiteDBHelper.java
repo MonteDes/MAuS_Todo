@@ -3,7 +3,6 @@ package de.thb.fbi.maus.bm.login.accessor;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
@@ -51,7 +50,7 @@ public class SQLiteDBHelper {
             "FOREIGN KEY (" + COL_REL_TODO + ") REFERENCES " + TABNAME_TODOITEMS + "(" + COL_ID + ")" +
             ");";
     private final String WHERE_IDENTIFY_ITEM = COL_ID + "=?";
-
+    private final String WHERE_IDENTIFY_RELATION = COL_REL_TODO + "=?";
 
     SQLiteDatabase db;
 
@@ -176,14 +175,14 @@ public class SQLiteDBHelper {
 
     public void removeRelationFromDB(ContactRelation relation) {
         Log.i(logger, "Deleting Relation (CID: " + relation.getContactId() + "\tItem_ID: " + relation.getTodoId() + ") in DB");
-        this.db.delete(TABNAME_REL_CONTACT, WHERE_IDENTIFY_ITEM,
+        this.db.delete(TABNAME_REL_CONTACT, WHERE_IDENTIFY_RELATION,
                 new String[] {String.valueOf(relation.getContactId()), String.valueOf(relation.getTodoId())});
         Log.i(logger, "Deleted Relation from DB");
     }
 
     public void updateRelationInDB(ContactRelation relation) {
         Log.i(logger, "Updating Relation (CID: " + relation.getContactId() + "\tItem_ID: " + relation.getTodoId() + ") in DB");
-        this.db.update(TABNAME_REL_CONTACT, createDBContactRelation(relation), WHERE_IDENTIFY_ITEM,
+        this.db.update(TABNAME_REL_CONTACT, createDBContactRelation(relation), WHERE_IDENTIFY_RELATION,
                 new String[] {String.valueOf(relation.getContactId()), String.valueOf(relation.getTodoId())});
         Log.i(logger, "Updated Relation in DB");
     }
