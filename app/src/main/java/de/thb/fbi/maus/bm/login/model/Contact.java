@@ -4,7 +4,7 @@ package de.thb.fbi.maus.bm.login.model;
  * @author Benedikt M.
  */
 public class Contact {
-    private int id;
+    private long id;
     private String name;
 
     public Contact(int id, String name) {
@@ -12,11 +12,11 @@ public class Contact {
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

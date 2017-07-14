@@ -10,27 +10,60 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import de.thb.fbi.maus.bm.login.accessor.intent.IntentContactListAccessor;
 import de.thb.fbi.maus.bm.login.model.Contact;
 
 import java.util.ArrayList;
 
 public class ContactList extends AppCompatActivity {
-    ArrayList<Contact> list;
+    private ArrayList<Contact> list;
+    private ArrayList<Long> selectedContacts;
+    private IntentContactListAccessor accessor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
-        ListView contactList = (ListView) findViewById(R.id.contacts_listView);
+
+        this.accessor = new IntentContactListAccessor();
+        this.accessor.setActivity(this);
+
+        final ListView contactList = (ListView) findViewById(R.id.contacts_listView);
+        final Button saveButton = (Button) findViewById(R.id.contact_list_save_button);
+        final Button returnButton = (Button) findViewById(R.id.contact_list_return_button);
+
+        if(accessor.hasItem()) {
+            this.selectedContacts = accessor.readItem().getAssociatedContacts();
+        }
 
         contactList.setAdapter(readContacts());
         contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                boolean check = false;
+                for(long e : selectedContacts) {
+                    if(e == list.get(position).getId()) {
+                        check = true;
+                        break;
+                    }
+                }
+                if(!check) {
+                    selectedContacts.add(list.get(position).getId());
+                    ((TextView)contactList.getChildAt(position).findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.black));
+                } else {
+                    selectedContacts.remove(list.get(position).getId());
+                    ((TextView)contactList.getChildAt(position).findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.lightGrey));
+                }
             }
         });
 
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processContactsSelected();
+            }
+        });
     }
 
     public ListAdapter readContacts() {
@@ -50,6 +83,7 @@ public class ContactList extends AppCompatActivity {
         final ListAdapter adapter = new ArrayAdapter<Contact>(this, R.layout.contact_layout, list){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                boolean isSelected = false;
                 View v = convertView;
                 if (v == null) {
                     LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -60,10 +94,26 @@ public class ContactList extends AppCompatActivity {
 
                 textView.setText(getItem(position).getName());
 
+                for (long c : selectedContacts) {
+                    if(c == getItem(position).getId()) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+                if(!isSelected)
+                    textView.setTextColor(getColor(R.color.lightGrey));
+
                 return v;
             }
         };
 
         return adapter;
+    }
+
+    public void processContactsSelected() {
+        this.accessor.readItem().setAssociatedContacts(this.selectedContacts);
+        this.accessor.writeItem();
+
+        finish();
     }
 }

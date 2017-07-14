@@ -29,12 +29,10 @@ import java.util.*;
 
 public class TodoDetail extends AppCompatActivity {
 
-    private final int MY_PERMISSION_REQUEST_CONTACTS = 100;
-    private final int REQUEST_CONTACTS = 1;
-    private final int RESPONSE_BACK_PRESSED = 0;
-    private final int RESPONSE_CONTACTS_SELECTED = 1;
-
-    private final String ARG_RELATIONS = "relationsList";
+    public static final int MY_PERMISSION_REQUEST_CONTACTS = 100;
+    public static final int REQUEST_CONTACTS = 1;
+    public static final int RESPONSE_BACK_PRESSED = 0;
+    public static final int RESPONSE_CONTACTS_SELECTED = 1;
 
     private IntentTodoItemAccessor accessor;
     private boolean imp;
@@ -154,7 +152,7 @@ public class TodoDetail extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                processItemSave(accessor, nameEdit, descEdit, dueDate, doneSwitch, importButton);
+                processItemSave(accessor, nameEdit, descEdit, dueDate, doneSwitch, importButton, item.getAssociatedContacts());
             }
         });
         // delete item and return to list activity
@@ -191,6 +189,7 @@ public class TodoDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TodoDetail.this, ContactList.class);
+                intent.putExtra(Todos.ARG_ITEM_OBJECT, accessor.readItem());
                 int permissionCheck = ContextCompat.checkSelfPermission(TodoDetail.this, Manifest.permission.READ_CONTACTS);
 
                 if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -209,10 +208,10 @@ public class TodoDetail extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
         processItemSave(accessor, (EditText) findViewById(R.id.detailsName), (EditText)findViewById(R.id.detailsDescription), dueDate,
-                (Switch)findViewById(R.id.switch_Done), (Button)findViewById(R.id.details_button_favorite));
+                (Switch)findViewById(R.id.switch_Done), (Button)findViewById(R.id.details_button_favorite), this.item.getAssociatedContacts());
     }
 
-    private void processItemSave(TodoItemAccessor accessor, EditText name, EditText desc, long dueDate, Switch done, Button important) {
+    private void processItemSave(TodoItemAccessor accessor, EditText name, EditText desc, long dueDate, Switch done, Button important, ArrayList<Long> contacts) {
 
         accessor.readItem().setName(name.getText().toString());
         accessor.readItem().setDesciption(desc.getText().toString());
@@ -227,7 +226,7 @@ public class TodoDetail extends AppCompatActivity {
         } else {
             accessor.readItem().setImportant(false);
         }
-
+        accessor.readItem().setAssociatedContacts(contacts);
 
         accessor.writeItem();
 
@@ -251,12 +250,10 @@ public class TodoDetail extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CONTACTS) {
             if(resultCode == RESPONSE_CONTACTS_SELECTED) {
-                long [] relations = data != null ? (long[]) data.getSerializableExtra(ARG_RELATIONS) : null;
-                if(relations != null) {
-                    for (int i = 0; i < relations.length; i++) {
-                        item.addAssociatedContact(relations[i]);
-                    }
-                }
+                this.item = data != null ? (TodoItem) data.getSerializableExtra(Todos.ARG_ITEM_OBJECT) : null;
+
+                this.accessor.readItem().setAssociatedContacts(this.item.getAssociatedContacts());
+                this.accessor.writeItem();
             }
 
         }
