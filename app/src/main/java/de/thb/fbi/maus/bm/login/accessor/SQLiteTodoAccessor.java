@@ -107,7 +107,7 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
     }
 
     private void readItemsFromDB() {
-        Cursor c = dbHelper.getCursor();
+        Cursor c = dbHelper.getTodoCursor();
 
         c.moveToFirst();
         while(!c.isAfterLast()) {

@@ -24,8 +24,8 @@ public class SQLiteDBHelper {
 
     private static final String DBNAME = "todoItems.db";
     private static final int INITIAL_DBVERSION = 0;
-    private static final String TABNAME_TODOITEMS = "todoItems";
-    private static final String TABNAME_REL_CONTACT = "contactRelation";
+    protected static final String TABNAME_TODOITEMS = "todoItems";
+    protected static final String TABNAME_REL_CONTACT = "contactRelation";
 
     protected static final String COL_ID = "_id";
     protected static final String COL_IMPORTANT = "important";
@@ -98,7 +98,7 @@ public class SQLiteDBHelper {
         return insertItem;
     }
 
-    public Cursor getCursor(){
+    public Cursor getTodoCursor(){
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(TABNAME_TODOITEMS);
 
@@ -113,6 +113,15 @@ public class SQLiteDBHelper {
         Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
 
         return cursor;
+    }
+
+    public Cursor getRelationCursor() {
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(TABNAME_REL_CONTACT);
+
+        String[] asColumnsToReturn = {COL_REL_CONTACT, COL_REL_TODO};
+
+        return queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, null);
     }
 
     public TodoItem createItemFromCursor(Cursor c) {

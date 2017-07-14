@@ -102,7 +102,7 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
 
         @Override
         protected Cursor loadCursor() {
-            return dbHelper.getCursor();
+            return dbHelper.getTodoCursor();
         }
     }
 
