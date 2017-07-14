@@ -3,10 +3,12 @@ package de.thb.fbi.maus.bm.login.accessor;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.CursorJoiner;
 import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
+import de.thb.fbi.maus.bm.login.model.Contact;
 import de.thb.fbi.maus.bm.login.model.ContactRelation;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
@@ -22,7 +24,7 @@ public class SQLiteDBHelper {
 
     private static final String logger = SQLiteDBHelper.class.getName();
 
-    private static final String DBNAME = "todoItems.db";
+    private static final String DBNAME = "todostest3.db";
     private static final int INITIAL_DBVERSION = 0;
     private static final String TABNAME_TODOITEMS = "todoItems";
     private static final String TABNAME_REL_CONTACT = "contactRelation";
@@ -45,8 +47,8 @@ public class SQLiteDBHelper {
             COL_DONE + " TINYINT" +
             ");";
     private static final String REL_TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_REL_CONTACT + " (" +
-            COL_REL_TODO + "INTEGER PRIMARY KEY,\n" +
-            COL_REL_CONTACT + "INTEGER PRIMARY KEY,\n" +
+            COL_REL_TODO + " INTEGER,\n" +
+            COL_REL_CONTACT + " INTEGER,\n" +
             "PRIMARY KEY(" + COL_REL_TODO + "," + COL_REL_CONTACT + ")" +
             "FOREIGN KEY (" + COL_REL_TODO + ") REFERENCES " + TABNAME_TODOITEMS + "(" + COL_ID + ")" +
             ");";
@@ -100,20 +102,23 @@ public class SQLiteDBHelper {
 
     public Cursor getCursor(){
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(TABNAME_TODOITEMS);
+        queryBuilder.setTables(TABNAME_TODOITEMS + " INNER JOIN " + TABNAME_REL_CONTACT + " ON " +
+        TABNAME_TODOITEMS + "." + COL_ID + "=" + TABNAME_REL_CONTACT + "." + COL_REL_TODO);
 
-        String[] asColumnsToReturn =  {COL_ID, COL_IMPORTANT, COL_NAME, COL_DESCRIPTION, COL_DUEDATE, COL_DONE};
+        String[] asColumnsToReturn =  {TABNAME_TODOITEMS + "." + COL_ID, TABNAME_TODOITEMS + "." + COL_IMPORTANT, TABNAME_TODOITEMS + "." + COL_NAME,
+                TABNAME_TODOITEMS + "." + COL_DESCRIPTION, TABNAME_TODOITEMS + "." + COL_DUEDATE,
+                TABNAME_TODOITEMS + "." + COL_DONE, TABNAME_REL_CONTACT + "." + COL_REL_CONTACT};
         String ordering;
-        if(ordering_method == 0) {
+      /*  if(ordering_method == 0) {
             ordering = COL_DONE + " ASC, " + COL_IMPORTANT + " DESC, " + COL_DUEDATE + " ASC";
         } else {
             ordering = COL_DONE + " ASC, " + COL_DUEDATE + " ASC, " + COL_IMPORTANT + " DESC";
-        }
+        }*/
+      ordering = TABNAME_TODOITEMS + "." + COL_DONE + " ASC, " + TABNAME_TODOITEMS + "." + COL_IMPORTANT + " DESC, " + TABNAME_TODOITEMS + "." + COL_DUEDATE + " ASC";
 
-        Cursor cursor[] = {queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering) };
+        Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
 
-        MergeCursor mergeCursor = new MergeCursor(cursor);
-        return mergeCursor;
+        return cursor;
     }
 
     public TodoItem createItemFromCursor(Cursor c) {
@@ -130,7 +135,7 @@ public class SQLiteDBHelper {
         bool = c.getInt(c.getColumnIndex(COL_DONE));
         item.setDone(bool != 0);
 
-
+        item.addContact(c.getInt(c.getColumnIndex(COL_REL_CONTACT)));
 
         return item;
     }

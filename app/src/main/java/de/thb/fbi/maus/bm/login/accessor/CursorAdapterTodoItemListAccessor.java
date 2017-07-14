@@ -12,10 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import de.thb.fbi.maus.bm.login.R;
+import de.thb.fbi.maus.bm.login.Todos;
 import de.thb.fbi.maus.bm.login.accessor.shared.AbstractActivityDataAccessor;
+import de.thb.fbi.maus.bm.login.model.Contact;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 /**
@@ -254,4 +257,90 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
         dbHelper.close();
     }
 
+
+    public ArrayAdapter<TodoItem> getArrayAdapter() {
+        this.dbHelper = new SQLiteDBHelper(getActivity());
+        this.dbHelper.prepareSQLiteDataBase();
+
+        LoaderManager loaderManager = getActivity().getLoaderManager();
+        loaderCallbacks = new MyLoaderCallbacks();
+        loaderManager.initLoader(LOADER_ID, null, loaderCallbacks);
+
+        this.cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.activity_todos, null,
+                new String[]{SQLiteDBHelper.COL_NAME, SQLiteDBHelper.COL_IMPORTANT},
+                new int[]{R.id.todo_name_mainView, R.id.important_button});
+
+        final ArrayList<TodoItem> list = new ArrayList<>();
+        Cursor c = this.dbHelper.getCursor();
+
+        c.moveToFirst();
+        while(!c.isAfterLast()) {
+            TodoItem item = dbHelper.createItemFromCursor(c);
+            boolean check = false;
+
+            for(TodoItem e: list) {
+
+                if(item.getId() == e.getId()) {
+                    check = true;
+                    item.addContact(item.getAssociatedContacts().get(0));
+                }
+
+            }
+            if(!check)
+                list.add(item);
+        }
+
+
+
+        ArrayAdapter adapter = new ArrayAdapter<TodoItem>(getActivity(), R.id.list_view, list){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View retView = convertView;
+                GregorianCalendar calendar = new GregorianCalendar();
+                TextView todoName;
+                CheckBox done;
+                Button importButton;
+
+                if (convertView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    retView = inflater.inflate(R.layout.todo_layout, parent, false);
+                }
+
+                todoName = (TextView) retView.findViewById(R.id.todo_name_mainView);
+                done = (CheckBox) retView.findViewById(R.id.checkBox_done);
+                importButton = (Button) retView.findViewById(R.id.important_button);
+
+                todoName.setText(String.format(getContext().getString(R.string.todo_nameANDduedate),
+                        list.get(position).getName(),
+                        DateFormat.getDateInstance(DateFormat.MEDIUM).format(list.get(position).getDueDate())));
+
+                if(list.get(position).getDueDate() < calendar.getTimeInMillis())
+                    todoName.setTextColor(getActivity().getColor(R.color.redAttention));
+
+                if(list.get(position).isDone()) {
+                    todoName.setTextColor(getActivity().getColor(R.color.lightGrey));
+                    done.setChecked(true);
+                } else {
+                    done.setChecked(false);
+                }
+
+                if(!list.get(position).isImportant()) {
+                    importButton.setBackgroundResource(R.mipmap.favorite_false);
+                } else {
+                    importButton.setBackgroundResource(R.mipmap.favorite_true);
+                }
+
+                importButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                return  retView;
+            }
+        };
+
+        adapter.setNotifyOnChange(true);
+        return adapter;
+    }
 }

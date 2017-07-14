@@ -18,7 +18,7 @@ public class TodoItem implements Serializable {
     private boolean done = false;
     private boolean important = false;
     private long dueDate;
-    private ArrayList<Contact> associatedContacts;
+    private ArrayList<Integer> associatedContacts;
 
     public TodoItem(String name, String description) {
         idCount++;
@@ -66,7 +66,7 @@ public class TodoItem implements Serializable {
         associatedContacts = new ArrayList<>();
     }
 
-    public TodoItem(String name, String description, boolean important, long dueDate, boolean done, ArrayList<Contact> associatedContacts){
+    public TodoItem(String name, String description, boolean important, long dueDate, boolean done, ArrayList<Integer> associatedContacts){
         this(name, description, important, dueDate, done);
         this.associatedContacts = associatedContacts;
     }
@@ -129,12 +129,16 @@ public class TodoItem implements Serializable {
         this.dueDate = dueDate;
     }
 
-    public ArrayList<Contact> getAssociatedContacts() {
+    public ArrayList<Integer> getAssociatedContacts() {
         return associatedContacts;
     }
 
-    public void setAssociatedContacts(ArrayList<Contact> associatedContacts) {
+    public void setAssociatedContacts(ArrayList<Integer> associatedContacts) {
         this.associatedContacts = associatedContacts;
+    }
+
+    public void addContact(int c) {
+        this.getAssociatedContacts().add(c);
     }
 
     @Override

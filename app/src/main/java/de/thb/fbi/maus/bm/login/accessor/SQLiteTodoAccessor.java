@@ -39,7 +39,7 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
         readItemsFromDB();
 
         ArrayAdapter<TodoItem> arrayAdapter = new ArrayAdapter<TodoItem>(getActivity(), R.layout.todo_layout){
-            @Override
+           /* @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View retView = convertView;
                 GregorianCalendar calendar = new GregorianCalendar();
@@ -86,7 +86,7 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
 
 
                 return retView;
-            }
+            }*/
         };
     return arrayAdapter;
     }

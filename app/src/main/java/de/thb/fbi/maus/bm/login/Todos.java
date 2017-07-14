@@ -50,8 +50,8 @@ public class Todos extends AppCompatActivity {
         accessor = new CursorAdapterTodoItemListAccessor();
         accessor.setActivity(this);
 
-        final ListAdapter listAdapter = accessor.getAdapter();
-
+        //final ListAdapter listAdapter = accessor.getAdapter();
+        final ArrayAdapter<TodoItem> listAdapter = accessor.getArrayAdapter();
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
