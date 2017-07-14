@@ -110,10 +110,9 @@ public class SQLiteDBHelper {
             ordering = COL_DONE + " ASC, " + COL_DUEDATE + " ASC, " + COL_IMPORTANT + " DESC";
         }
 
-        Cursor cursor[] = {queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering) };
+        Cursor cursor = queryBuilder.query(this.db, asColumnsToReturn, null, null, null, null, ordering);
 
-        MergeCursor mergeCursor = new MergeCursor(cursor);
-        return mergeCursor;
+        return cursor;
     }
 
     public TodoItem createItemFromCursor(Cursor c) {

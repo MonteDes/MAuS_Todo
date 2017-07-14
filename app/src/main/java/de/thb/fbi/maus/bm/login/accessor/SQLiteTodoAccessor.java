@@ -28,7 +28,7 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
 
     @Override
     public void addItem(TodoItem item) {
-
+        this.dbHelper.addItemToDB(item);
     }
 
     @Override
@@ -93,17 +93,17 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
 
     @Override
     public void updateItem(TodoItem item) {
-
+        this.dbHelper.updateItemInDB(item);
     }
 
     @Override
     public void deleteItem(TodoItem item) {
-
+        this.dbHelper.removeItemFromDB(item);
     }
 
     @Override
     public TodoItem getSelectedItem(int pos, int itemId) {
-        return null;
+        return this.itemList.get(pos);
     }
 
     private void readItemsFromDB() {
@@ -118,6 +118,6 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
 
     @Override
     public void close() {
-
+        dbHelper.close();
     }
 }
