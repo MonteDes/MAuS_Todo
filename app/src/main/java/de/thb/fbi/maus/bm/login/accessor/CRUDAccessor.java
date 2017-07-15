@@ -14,9 +14,10 @@ import java.util.List;
     public class CRUDAccessor implements TodoItemCRUDAccessor {
 
         private TodoItemCRUDAccessor client;
+        private String url;
 
         public CRUDAccessor (String url) {
-            this.client = ProxyFactory.create(TodoItemCRUDAccessor.class, url, new ApacheHttpClient4Executor());
+            this.url = url;
         }
 
         @Override
@@ -43,5 +44,13 @@ import java.util.List;
         public boolean deleteItem(long itemId) {
             return client.deleteItem(itemId);
         }
+
+        public TodoItemCRUDAccessor init() {
+            return this.client = ProxyFactory.create(TodoItemCRUDAccessor.class, url, new ApacheHttpClient4Executor());
+         }
+
+         public static String getBaseURL() {
+            return "http://10.0.2.2:8080/DataAccessRemoteWebapp-1.0-SNAPSHOT/rest";
+         }
     }
 

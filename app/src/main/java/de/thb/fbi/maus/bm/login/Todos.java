@@ -24,6 +24,8 @@ public class Todos extends AppCompatActivity {
     private static final int REQUEST_ITEM_DETAILS = 1;
     private static final int REQUEST_ITEM_CREATION = 2;
 
+    public static boolean online = false;
+
     private CursorAdapterTodoItemListAccessor accessor;
 
     private final String logger = Todos.class.getName();
@@ -41,12 +43,12 @@ public class Todos extends AppCompatActivity {
         final FloatingActionButton newButton = (FloatingActionButton) findViewById(R.id.newTodo);
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
-        accessor = new CursorAdapterTodoItemListAccessor();
-        accessor.setActivity(this);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options, R.layout.support_simple_spinner_dropdown_item);
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        accessor = new CursorAdapterTodoItemListAccessor();
+        accessor.setActivity(this);
 
         final ListAdapter listAdapter = accessor.getAdapter();
 
@@ -64,7 +66,9 @@ public class Todos extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO: 18.06.2017 How to reload the listView? 
                 SQLiteDBHelper.ordering_method = position;
+                Log.i(logger, "Position: " + position);
             }
 
             @Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_todo_detail"
     android:layout_width="match_parent"
@@ -63,9 +64,11 @@
         android:textAlignment="gravity"
         android:ems="10"
         android:layout_alignParentStart="true"
+        android:gravity="center"
         android:id="@+id/detailsDueDate"
-        android:layout_toStartOf="@+id/details_button_favorite"
-        android:layout_alignBottom="@+id/details_button_favorite"/>
+        android:layout_toStartOf="@+id/shareContacts_imageButton"
+        android:layout_alignBottom="@+id/details_button_favorite"
+        android:layout_below="@+id/detailsName"/>
 
     <Switch
         android:text="@string/detail_switch_done"
@@ -84,6 +87,14 @@
         android:layout_below="@+id/detailsName"
         android:layout_alignParentEnd="true"/>
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="?attr/actionModeShareDrawable"
+        android:layout_below="@+id/detailsName"
+        android:layout_toStartOf="@+id/details_button_favorite"
+        android:id="@+id/shareContacts_imageButton"
+        android:layout_above="@+id/detailsDescription"/>
 
 
 </RelativeLayout>

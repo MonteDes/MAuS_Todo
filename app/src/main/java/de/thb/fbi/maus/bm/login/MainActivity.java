@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.*;
+import de.thb.fbi.maus.bm.login.accessor.CRUDAccessor;
 import de.thb.fbi.maus.bm.login.accessor.CredentialsManager;
 
 import java.net.Socket;
@@ -33,6 +34,25 @@ public class MainActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final TextView progressBarText = (TextView) findViewById(R.id.myTextProgress);
 
+        new AsyncTask<Void, Void, Void>(){
+            CRUDAccessor accessor;
+            @Override
+            protected Void doInBackground(Void... voids) {
+                accessor = new CRUDAccessor(CRUDAccessor.getBaseURL());
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if(accessor == null) {
+                    Todos.online = false;
+                    startActivity(new Intent(MainActivity.this, Todos.class));
+                    Toast.makeText(MainActivity.this, R.string.webservice_not_available, Toast.LENGTH_LONG).show();
+                } else {
+                    Todos.online = true;
+                }
+            }
+        }.execute();
 
         // check syntax of email
         email.addTextChangedListener(new TextWatcher() {
@@ -140,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            // TODO: 16.06.2017 Implement offline/online login
             CredentialsManager credentialsManager = new CredentialsManager(4300, "54.202.56.214");
             Socket con = credentialsManager.establishConnection();
             if(con != null) {
@@ -167,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(connection) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     System.err.print(e.getMessage());
                 }
@@ -208,4 +227,5 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
     }
+
 }

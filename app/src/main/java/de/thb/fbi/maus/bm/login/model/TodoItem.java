@@ -1,6 +1,7 @@
 package de.thb.fbi.maus.bm.login.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * @author Benedikt M.
@@ -17,47 +18,57 @@ public class TodoItem implements Serializable {
     private boolean done = false;
     private boolean important = false;
     private long dueDate;
+    private ArrayList<Contact> associatedContacts;
 
-    public TodoItem(String name, String desciption) {
+    public TodoItem(String name, String description) {
         idCount++;
 
         this.setName(name);
-        this.setDesciption(desciption);
+        this.setDesciption(description);
         this.setImportant(false);
         this.setId(idCount);
+        associatedContacts = new ArrayList<>();
     }
 
-    public TodoItem(String name, String desciption, long dueDate) {
+    public TodoItem(String name, String description, long dueDate) {
         idCount++;
 
         this.setName(name);
-        this.setDesciption(desciption);
+        this.setDesciption(description);
         this.setImportant(false);
         this.setDueDate(dueDate);
         this.setDone(false);
         this.setId(idCount);
+        associatedContacts = new ArrayList<>();
     }
 
-    public TodoItem(String name, String desciption, boolean important, long dueDate) {
+    public TodoItem(String name, String description, boolean important, long dueDate) {
         idCount++;
 
         this.setName(name);
-        this.setDesciption(desciption);
+        this.setDesciption(description);
         this.setImportant(important);
         this.setDueDate(dueDate);
         this.setDone(false);
         this.setId(idCount);
+        associatedContacts = new ArrayList<>();
     }
 
-    public TodoItem(String name, String desciption, boolean important, long dueDate, boolean done) {
+    public TodoItem(String name, String description, boolean important, long dueDate, boolean done) {
         idCount++;
 
         this.setName(name);
-        this.setDesciption(desciption);
+        this.setDesciption(description);
         this.setDone(done);
         this.setDueDate(dueDate);
         this.setImportant(important);
         this.setId(idCount);
+        associatedContacts = new ArrayList<>();
+    }
+
+    public TodoItem(String name, String description, boolean important, long dueDate, boolean done, ArrayList<Contact> associatedContacts){
+        this(name, description, important, dueDate, done);
+        this.associatedContacts = associatedContacts;
     }
 
     public TodoItem() {
@@ -67,6 +78,7 @@ public class TodoItem implements Serializable {
         this.setDesciption("This is a default Todo");
         this.setImportant(false);
         this.setId(idCount);
+        associatedContacts = new ArrayList<>();
     }
 
     public long getId() {
@@ -115,6 +127,14 @@ public class TodoItem implements Serializable {
 
     public void setDueDate(long dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public ArrayList<Contact> getAssociatedContacts() {
+        return associatedContacts;
+    }
+
+    public void setAssociatedContacts(ArrayList<Contact> associatedContacts) {
+        this.associatedContacts = associatedContacts;
     }
 
     @Override

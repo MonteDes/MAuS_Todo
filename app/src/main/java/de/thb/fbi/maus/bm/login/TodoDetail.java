@@ -5,11 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import de.thb.fbi.maus.bm.login.accessor.TodoItemAccessor;
@@ -44,6 +46,7 @@ public class TodoDetail extends AppCompatActivity {
         final Button importButton = (Button) findViewById(R.id.details_button_favorite);
 
         final EditText descEdit = (EditText) findViewById(R.id.detailsDescription);
+        final ImageButton imageButton = (ImageButton) findViewById(R.id.shareContacts_imageButton);
 
         //initialize TimePicker and save picked values
         final TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
@@ -65,6 +68,16 @@ public class TodoDetail extends AppCompatActivity {
                 gYear = year;
                 gMonth = month;
                 gDay = dayOfMonth;
+
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
+                timePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                /*timePickerDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+
+                    }
+                });*/
 
                 timePickerDialog.show();
             }
@@ -95,19 +108,29 @@ public class TodoDetail extends AppCompatActivity {
             accessor.createItem();
         }
 
+
+
+
+
         // set trigger to open up the DatePicker
         dueDateEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                //inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(),0);
                 inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
+
+                datePickerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                /*datePickerDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+
+                    }
+                });*/
 
                 datePickerDialog.show();
 
-                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN
-                );
+
+
             }
         });
 
@@ -150,7 +173,17 @@ public class TodoDetail extends AppCompatActivity {
                 }
             }
         });
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TodoDetail.this, ContactList.class);
+
+                startActivity(intent);
+            }
+        });
     }
+
 
 
     // save item and return to list activity
