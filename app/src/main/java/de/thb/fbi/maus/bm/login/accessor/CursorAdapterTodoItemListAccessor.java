@@ -249,6 +249,10 @@ public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAcces
         return dbHelper.createItemFromCursor((Cursor) this.cursorAdapter.getItem(pos));
     }
 
+    public SQLiteDBHelper getDbHelper() {
+        return this.dbHelper;
+    }
+
     @Override
     public void close() {
         dbHelper.close();

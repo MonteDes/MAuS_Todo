@@ -10,8 +10,11 @@ import android.view.View;
 import android.widget.*;
 import de.thb.fbi.maus.bm.login.accessor.CursorAdapterTodoItemListAccessor;
 import de.thb.fbi.maus.bm.login.accessor.SQLiteDBHelper;
+import de.thb.fbi.maus.bm.login.accessor.SQLiteRelationAccessor;
+import de.thb.fbi.maus.bm.login.model.ContactRelation;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Todos extends AppCompatActivity {
@@ -27,6 +30,7 @@ public class Todos extends AppCompatActivity {
     public static boolean online = false;
 
     private CursorAdapterTodoItemListAccessor accessor;
+    private SQLiteRelationAccessor relationAccessor;
 
     private final String logger = Todos.class.getName();
 
@@ -50,6 +54,12 @@ public class Todos extends AppCompatActivity {
         accessor = new CursorAdapterTodoItemListAccessor();
         accessor.setActivity(this);
 
+        relationAccessor = new SQLiteRelationAccessor();
+        relationAccessor.setActivity(this);
+        relationAccessor.init();
+
+
+
         final ListAdapter listAdapter = accessor.getAdapter();
 
         listView.setAdapter(listAdapter);
@@ -58,6 +68,9 @@ public class Todos extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(logger, "onItemClick: Position is " + position + ", id is " + id);
                 TodoItem item = accessor.getSelectedItem(position, (int) id);
+
+                relationAccessor.readRelations();
+                item = relationAccessor.makeItemContactReady(item);
 
                 processItemSelection(item);
             }
@@ -110,11 +123,13 @@ public class Todos extends AppCompatActivity {
             if (resultCode == RESPONSE_ITEM_EDITED) {
                 Log.i(logger, "existing item saved, updating db.");
                 this.accessor.updateItem(item);
+                this.relationAccessor.handleRelations(item);
             } else if (resultCode == RESPONSE_ITEM_DELETED) {
                 this.accessor.deleteItem(item);
             }
         } else if (requestCode == REQUEST_ITEM_CREATION && resultCode == RESPONSE_ITEM_EDITED) {
             this.accessor.addItem(item);
+            this.relationAccessor.handleRelations(item);
         }
     }
 
@@ -123,6 +138,7 @@ public class Todos extends AppCompatActivity {
         Log.i(logger, "onDestroy(): closing accessor");
         super.onDestroy();
         this.accessor.close();
+        this.relationAccessor.close();
     }
 
     public CursorAdapterTodoItemListAccessor getAccessor() {

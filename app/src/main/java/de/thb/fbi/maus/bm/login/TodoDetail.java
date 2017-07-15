@@ -38,7 +38,7 @@ public class TodoDetail extends AppCompatActivity {
     private boolean imp;
     private long dueDate;
     private int gYear, gMonth, gDay, gHour, gMinute;
-    private TodoItem item;
+    private TodoItem item = new TodoItem();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Calendar c = Calendar.getInstance();
@@ -190,8 +190,8 @@ public class TodoDetail extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(TodoDetail.this, ContactList.class);
                 intent.putExtra(Todos.ARG_ITEM_OBJECT, accessor.readItem());
-                int permissionCheck = ContextCompat.checkSelfPermission(TodoDetail.this, Manifest.permission.READ_CONTACTS);
 
+                int permissionCheck = ContextCompat.checkSelfPermission(TodoDetail.this, Manifest.permission.READ_CONTACTS);
                 if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
                     startActivityForResult(intent, REQUEST_CONTACTS);
                 } else if(permissionCheck == PackageManager.PERMISSION_DENIED){

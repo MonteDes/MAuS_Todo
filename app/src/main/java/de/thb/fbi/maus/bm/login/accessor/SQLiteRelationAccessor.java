@@ -19,30 +19,46 @@ public class SQLiteRelationAccessor extends AbstractActivityDataAccessor impleme
     private List<ContactRelation>relations;
 
     public SQLiteRelationAccessor() {
-        this.dbHelper = new SQLiteDBHelper(getActivity());
-        this.dbHelper.prepareSQLiteDataBase();
-        this.relations = new ArrayList<>();
     }
 
     public SQLiteRelationAccessor(SQLiteDBHelper dbHelper) {
         this.dbHelper = dbHelper;
         this.relations = new ArrayList<>();
+        //readRelations();
     }
 
     @Override
-    public void addRelation(ContactRelation relation) {
-        this.dbHelper.addRelationToDB(relation);
-    }
+    public void handleRelations(TodoItem item) {
+        ArrayList<Long> itemContacts = item.getAssociatedContacts();
+        long itemId = item.getId();
 
-    //not needed
-    @Override
-    public ListAdapter getAdapter() {
-        return null;
-    }
 
-    @Override
-    public void deleteRelation(ContactRelation relation) {
-        this.dbHelper.removeRelationFromDB(relation);
+
+        //check for new relations
+        for (long e: itemContacts) {
+            boolean isOld = false;
+            for(ContactRelation r : this.relations) {
+                if(r.getTodoId() == itemId && r.getContactId() == e) {
+                    isOld = true;
+                    break;
+                }
+            }
+            if(!isOld)
+                this.dbHelper.addRelationToDB(new ContactRelation(e, itemId));
+        }
+
+        //check for deleted relations
+        for(ContactRelation r : this.relations) {
+            boolean isStillThere = false;
+            for(long e : itemContacts) {
+                if(r.getTodoId() == itemId && r.getContactId() == e) {
+                    isStillThere = true;
+                    break;
+                }
+            }
+            if(!isStillThere)
+                this.dbHelper.removeRelationFromDB(new ContactRelation(r.getContactId(), r.getTodoId()));
+        }
     }
 
     @Override
@@ -60,15 +76,24 @@ public class SQLiteRelationAccessor extends AbstractActivityDataAccessor impleme
         return retItem;
     }
 
-    private void readRelations() {
+    public void readRelations() {
+
+
         Cursor c = this.dbHelper.getRelationCursor();
+        this.relations.clear();
 
         c.moveToFirst();
         while(!c.isAfterLast()) {
             this.relations.add(this.dbHelper.createRelationFromCursor(c));
+            c.moveToNext();
         }
     }
 
+    public void init() {
+        this.dbHelper = new SQLiteDBHelper(getActivity());
+        this.dbHelper.prepareSQLiteDataBase();
+        this.relations = new ArrayList<>();
+    }
     @Override
     public void close() {
         this.dbHelper.close();

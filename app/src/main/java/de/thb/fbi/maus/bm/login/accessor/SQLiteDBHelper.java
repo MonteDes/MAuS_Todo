@@ -21,7 +21,7 @@ public class SQLiteDBHelper {
 
     private static final String logger = SQLiteDBHelper.class.getName();
 
-    private static final String DBNAME = "todoItems.db";
+    private static final String DBNAME = "todoItems6.db";
     private static final int INITIAL_DBVERSION = 0;
     protected static final String TABNAME_TODOITEMS = "todoItems";
     protected static final String TABNAME_REL_CONTACT = "contactRelation";
@@ -44,13 +44,13 @@ public class SQLiteDBHelper {
             COL_DONE + " TINYINT" +
             ");";
     private static final String REL_TABLE_CREATION_QUERY = "CREATE TABLE " + TABNAME_REL_CONTACT + " (" +
-            COL_REL_TODO + "INTEGER PRIMARY KEY,\n" +
-            COL_REL_CONTACT + "INTEGER PRIMARY KEY,\n" +
+            COL_REL_TODO + " INTEGER,\n" +
+            COL_REL_CONTACT + " INTEGER,\n" +
             "PRIMARY KEY(" + COL_REL_TODO + "," + COL_REL_CONTACT + ")" +
             "FOREIGN KEY (" + COL_REL_TODO + ") REFERENCES " + TABNAME_TODOITEMS + "(" + COL_ID + ")" +
             ");";
     private final String WHERE_IDENTIFY_ITEM = COL_ID + "=?";
-    private final String WHERE_IDENTIFY_RELATION = COL_REL_TODO + "=?";
+    private final String WHERE_IDENTIFY_RELATION = COL_REL_TODO + "=?" + " AND " + COL_REL_CONTACT + "=?";
 
     SQLiteDatabase db;
 
@@ -176,7 +176,7 @@ public class SQLiteDBHelper {
     public void removeRelationFromDB(ContactRelation relation) {
         Log.i(logger, "Deleting Relation (CID: " + relation.getContactId() + "\tItem_ID: " + relation.getTodoId() + ") in DB");
         this.db.delete(TABNAME_REL_CONTACT, WHERE_IDENTIFY_RELATION,
-                new String[] {String.valueOf(relation.getContactId()), String.valueOf(relation.getTodoId())});
+                new String[] {String.valueOf(relation.getTodoId()), String.valueOf(relation.getContactId())});
         Log.i(logger, "Deleted Relation from DB");
     }
 

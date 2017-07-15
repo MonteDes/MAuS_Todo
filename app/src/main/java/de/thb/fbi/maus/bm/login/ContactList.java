@@ -25,13 +25,12 @@ public class ContactList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
-
-        this.accessor = new IntentContactListAccessor();
-        this.accessor.setActivity(this);
-
         final ListView contactList = (ListView) findViewById(R.id.contacts_listView);
         final Button saveButton = (Button) findViewById(R.id.contact_list_save_button);
         final Button returnButton = (Button) findViewById(R.id.contact_list_return_button);
+
+        this.accessor = new IntentContactListAccessor();
+        this.accessor.setActivity(this);
 
         if(accessor.hasItem()) {
             this.selectedContacts = accessor.readItem().getAssociatedContacts();
@@ -68,18 +67,19 @@ public class ContactList extends AppCompatActivity {
 
     public ListAdapter readContacts() {
         ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(ContactsContract.RawContacts.CONTENT_URI, null, null, null, ContactsContract.Data.DISPLAY_NAME);
+        Cursor cursor = resolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.Data.DISPLAY_NAME);
 
         list = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Contact contact = new Contact(cursor.getInt(cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)),
+
+            Contact contact = new Contact(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME)));
 
             list.add(contact);
             cursor.moveToNext();
         }
-
+        cursor.close();
         final ListAdapter adapter = new ArrayAdapter<Contact>(this, R.layout.contact_layout, list){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
