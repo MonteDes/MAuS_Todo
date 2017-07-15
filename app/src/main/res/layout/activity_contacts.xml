@@ -11,4 +11,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="de.thb.fbi.maus.bm.login.Contacts">
 
+    <Button
+        android:text="Switch to Todos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_todoItem_Button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"/>
+
+    <ExpandableListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/expandle_contact_view"
+        android:layout_below="@+id/switch_todoItem_Button"/>
 </RelativeLayout>

@@ -14,7 +14,8 @@
         android:id="@+id/todo_name_mainView"
         android:layout_alignBottom="@+id/important_button"
         android:layout_toStartOf="@+id/checkBox_done"
-        android:layout_toEndOf="@id/important_button"/>
+        android:layout_toEndOf="@id/important_button"
+        android:gravity="center_vertical"/>
 
     <Button
         android:background="@mipmap/favorite_false"
