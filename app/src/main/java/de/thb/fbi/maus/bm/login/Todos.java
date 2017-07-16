@@ -159,7 +159,7 @@ public class Todos extends AppCompatActivity {
             } else if (resultCode == RESPONSE_ITEM_DELETED) {
                 item.setAssociatedContacts(new ArrayList<Long>());
                 this.accessor.deleteItem(item);
-                this.relationAccessor.handleRelations(item);
+                //this.relationAccessor.handleRelations(item);
             }
         } else if (requestCode == REQUEST_ITEM_CREATION && resultCode == RESPONSE_ITEM_EDITED) {
             this.accessor.addItem(item);

@@ -57,7 +57,7 @@ public class SQLiteRelationAccessor extends AbstractActivityDataAccessor impleme
                 }
             }
             if(!isStillThere)
-                this.dbHelper.removeRelationFromDB(new ContactRelation(r.getContactId(), r.getTodoId()));
+                this.dbHelper.removeRelationFromDB(r);
         }
     }
 

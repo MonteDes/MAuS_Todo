@@ -16,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import de.thb.fbi.maus.bm.login.accessor.SQLiteRelationAccessor;
+import de.thb.fbi.maus.bm.login.accessor.SQLiteTodoAccessor;
 import de.thb.fbi.maus.bm.login.model.Contact;
+import de.thb.fbi.maus.bm.login.model.TodoItem;
 
 import java.util.ArrayList;
 
@@ -42,6 +44,35 @@ public class Contacts extends AppCompatActivity {
         }
 
         this.initContacts();
+
+        SQLiteTodoAccessor todoAccessor = new SQLiteTodoAccessor();
+        todoAccessor.setActivity(this);
+        ArrayList<TodoItem> items = todoAccessor.getItemList();
+        SQLiteRelationAccessor relationAccessor = new SQLiteRelationAccessor();
+        relationAccessor.setActivity(this);
+        relationAccessor.init();
+        relationAccessor.readRelations();
+
+        ArrayList<Contact> tempList = new ArrayList<>();
+
+        for (Contact c : list) {
+            boolean check = false;
+            for(TodoItem i : items) {
+                TodoItem nItem = relationAccessor.makeItemContactReady(i);
+                ArrayList<Long>contactIds = nItem.getAssociatedContacts();
+                for(long l : contactIds) {
+                    if(l == c.getId()) {
+                        check = true;
+                        break;
+                    }
+                }
+            }
+            if(check) {
+                tempList.add(c);
+            }
+        }
+
+        this.list = tempList;
 
         final ArrayAdapter<Contact> arrayAdapter = new ArrayAdapter<Contact>(this, R.layout.contact_layout, this.list) {
             @Override
