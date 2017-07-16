@@ -20,6 +20,10 @@ import java.util.GregorianCalendar;
 
 /**
  * @author Benedikt M
+ *
+ * This base (first) version of this code is adapted from uebung6-dataaccesslocal_476f3343b071.
+ *
+ * Other Accessors are inspired by this one.
  */
 public class CursorAdapterTodoItemListAccessor extends AbstractActivityDataAccessor implements TodoItemListAccessor {
     private static final String logger = CursorAdapterTodoItemListAccessor.class.getName();
