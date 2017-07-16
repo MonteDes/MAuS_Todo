@@ -10,6 +10,7 @@ import de.thb.fbi.maus.bm.login.R;
 import de.thb.fbi.maus.bm.login.accessor.shared.AbstractActivityDataAccessor;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -109,11 +110,21 @@ public class SQLiteTodoAccessor extends AbstractActivityDataAccessor implements 
     private void readItemsFromDB() {
         Cursor c = dbHelper.getTodoCursor();
 
+        this.itemList.clear();
         c.moveToFirst();
         while(!c.isAfterLast()) {
             this.itemList.add(dbHelper.createItemFromCursor(c));
             c.moveToNext();
         }
+    }
+
+    public ArrayList<TodoItem> getItemList() {
+        if(dbHelper == null){
+            dbHelper = new SQLiteDBHelper(getActivity());
+            dbHelper.prepareSQLiteDataBase();
+        }
+        readItemsFromDB();
+        return this.itemList;
     }
 
     @Override

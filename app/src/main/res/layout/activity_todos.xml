@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/button2"
+        android:id="@+id/switch_Contacts_Button"
         android:layout_alignParentEnd="true"/>
 
     <TextView
@@ -46,14 +46,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ordering_text"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/switch_Contacts_Button"
         android:layout_alignParentStart="true"/>
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/switch_Contacts_Button"
         android:layout_toEndOf="@+id/ordering_text"/>
 
 

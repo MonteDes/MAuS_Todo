@@ -13,6 +13,8 @@ import java.util.List;
      */
     public class CRUDAccessor implements TodoItemCRUDAccessor {
 
+
+
         private TodoItemCRUDAccessor client;
         private String url;
 
@@ -52,5 +54,9 @@ import java.util.List;
          public static String getBaseURL() {
             return "http://10.0.2.2:8080/DataAccessRemoteWebapp-1.0-SNAPSHOT/rest";
          }
+
+         public TodoItemCRUDAccessor getClient() {
+            return client;
+        }
     }
 

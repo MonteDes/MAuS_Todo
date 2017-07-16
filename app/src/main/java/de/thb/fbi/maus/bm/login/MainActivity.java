@@ -39,12 +39,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... voids) {
                 accessor = new CRUDAccessor(CRUDAccessor.getBaseURL());
+                accessor.init();
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                if(accessor == null) {
+                if(accessor.getClient() == null) {
                     Todos.online = false;
                     startActivity(new Intent(MainActivity.this, Todos.class));
                     Toast.makeText(MainActivity.this, R.string.webservice_not_available, Toast.LENGTH_LONG).show();

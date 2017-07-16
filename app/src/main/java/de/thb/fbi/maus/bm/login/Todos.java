@@ -1,21 +1,18 @@
 package de.thb.fbi.maus.bm.login;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
+import de.thb.fbi.maus.bm.login.accessor.CRUDAccessor;
 import de.thb.fbi.maus.bm.login.accessor.CursorAdapterTodoItemListAccessor;
 import de.thb.fbi.maus.bm.login.accessor.SQLiteDBHelper;
 import de.thb.fbi.maus.bm.login.accessor.SQLiteRelationAccessor;
-import de.thb.fbi.maus.bm.login.model.ContactRelation;
+import de.thb.fbi.maus.bm.login.accessor.intent.IntentContactListAccessor;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
-
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Todos extends AppCompatActivity {
     public static final String ARG_ITEM_OBJECT = "itemObject";
@@ -24,13 +21,15 @@ public class Todos extends AppCompatActivity {
     public static final int RESPONSE_ITEM_DELETED = 2;
     public static final int RESPONSE_NOCHANGE = -1;
 
-    private static final int REQUEST_ITEM_DETAILS = 1;
-    private static final int REQUEST_ITEM_CREATION = 2;
+    public static final int REQUEST_ITEM_DETAILS = 1;
+    public static final int REQUEST_ITEM_CREATION = 2;
 
     public static boolean online = false;
+    private TodoItem cItem;
 
     private CursorAdapterTodoItemListAccessor accessor;
     private SQLiteRelationAccessor relationAccessor;
+    private CRUDAccessor webAccessor;
 
     private final String logger = Todos.class.getName();
 
@@ -46,6 +45,7 @@ public class Todos extends AppCompatActivity {
         final ListView listView = (ListView) findViewById(R.id.list_view);
         final FloatingActionButton newButton = (FloatingActionButton) findViewById(R.id.newTodo);
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        final Button switchToContactsButton = (Button) findViewById(R.id.switch_Contacts_Button);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sort_options, R.layout.support_simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -58,7 +58,13 @@ public class Todos extends AppCompatActivity {
         relationAccessor.setActivity(this);
         relationAccessor.init();
 
+        if (online) {
+            webAccessor = new CRUDAccessor(CRUDAccessor.getBaseURL());
+            webAccessor.init();
+            if (webAccessor.getClient() == null) {
 
+            }
+        }
 
         final ListAdapter listAdapter = accessor.getAdapter();
 
@@ -96,6 +102,16 @@ public class Todos extends AppCompatActivity {
                 processNewItemRequest();
             }
         });
+
+        switchToContactsButton.setOnClickListener(new View.OnClickListener() {
+                                                      @Override
+                                                      public void onClick(View v) {
+                                                          Intent intent = new Intent(Todos.this, Contacts.class);
+
+                                                          startActivity(intent);
+                                                      }
+                                                  }
+        );
     }
 
     private void processNewItemRequest() {
@@ -122,6 +138,7 @@ public class Todos extends AppCompatActivity {
         if (requestCode == REQUEST_ITEM_DETAILS) {
             if (resultCode == RESPONSE_ITEM_EDITED) {
                 Log.i(logger, "existing item saved, updating db.");
+                this.cItem = item;
                 this.accessor.updateItem(item);
                 this.relationAccessor.handleRelations(item);
             } else if (resultCode == RESPONSE_ITEM_DELETED) {

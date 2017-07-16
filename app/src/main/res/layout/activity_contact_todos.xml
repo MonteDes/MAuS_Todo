@@ -2,26 +2,28 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_contacts"
+    android:id="@+id/activity_contact_todos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="de.thb.fbi.maus.bm.login.Contacts">
+    tools:context="de.thb.fbi.maus.bm.login.ContactTodos">
 
     <Button
-        android:text="Switch to Todos"
+        android:text="Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/switch_todoItem_Button"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/contact_todos_backButton"/>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/contact_list_view_inContacts"
-        android:layout_below="@+id/switch_todoItem_Button"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/contact_todos_backButton"
+        android:id="@+id/contact_todos_listView"/>
 </RelativeLayout>
