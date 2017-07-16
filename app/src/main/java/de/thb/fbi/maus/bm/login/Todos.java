@@ -14,6 +14,8 @@ import de.thb.fbi.maus.bm.login.accessor.SQLiteRelationAccessor;
 import de.thb.fbi.maus.bm.login.accessor.intent.IntentContactListAccessor;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
+import java.util.ArrayList;
+
 public class Todos extends AppCompatActivity {
     public static final String ARG_ITEM_OBJECT = "itemObject";
 
@@ -142,7 +144,9 @@ public class Todos extends AppCompatActivity {
                 this.accessor.updateItem(item);
                 this.relationAccessor.handleRelations(item);
             } else if (resultCode == RESPONSE_ITEM_DELETED) {
+                item.setAssociatedContacts(new ArrayList<Long>());
                 this.accessor.deleteItem(item);
+                this.relationAccessor.handleRelations(item);
             }
         } else if (requestCode == REQUEST_ITEM_CREATION && resultCode == RESPONSE_ITEM_EDITED) {
             this.accessor.addItem(item);

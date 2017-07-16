@@ -94,6 +94,16 @@ public class SQLiteRelationAccessor extends AbstractActivityDataAccessor impleme
         this.dbHelper.prepareSQLiteDataBase();
         this.relations = new ArrayList<>();
     }
+
+    public void deleteAllAssociatedRelations(TodoItem item) {
+        readRelations();
+        for (ContactRelation r : this.relations) {
+            if(r.getTodoId() == item.getId()) {
+                this.relations.remove(r);
+            }
+        }
+    }
+
     @Override
     public void close() {
         this.dbHelper.close();
