@@ -1,8 +1,12 @@
 package de.thb.fbi.maus.bm.login;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +19,8 @@ import de.thb.fbi.maus.bm.login.accessor.intent.IntentContactListAccessor;
 import de.thb.fbi.maus.bm.login.model.TodoItem;
 
 import java.util.ArrayList;
+
+import static de.thb.fbi.maus.bm.login.TodoDetail.MY_PERMISSION_REQUEST_CONTACTS;
 
 public class Todos extends AppCompatActivity {
     public static final String ARG_ITEM_OBJECT = "itemObject";
@@ -66,6 +72,13 @@ public class Todos extends AppCompatActivity {
             if (webAccessor.getClient() == null) {
 
             }
+        }
+
+        int permissionCheck = ContextCompat.checkSelfPermission(Todos.this, Manifest.permission.READ_CONTACTS);
+        if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
+
+        } else if(permissionCheck == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(Todos.this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_CONTACTS);
         }
 
         final ListAdapter listAdapter = accessor.getAdapter();

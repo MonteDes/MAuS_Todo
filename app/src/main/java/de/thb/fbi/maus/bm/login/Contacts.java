@@ -1,10 +1,14 @@
 package de.thb.fbi.maus.bm.login;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +19,8 @@ import de.thb.fbi.maus.bm.login.accessor.SQLiteRelationAccessor;
 import de.thb.fbi.maus.bm.login.model.Contact;
 
 import java.util.ArrayList;
+
+import static de.thb.fbi.maus.bm.login.TodoDetail.MY_PERMISSION_REQUEST_CONTACTS;
 
 public class Contacts extends AppCompatActivity {
     public static final String CONTACT_ID = "contactId";
@@ -27,6 +33,13 @@ public class Contacts extends AppCompatActivity {
 
         final ListView listView = (ListView) findViewById(R.id.contact_list_view_inContacts);
         final Button switchToTodosButton = (Button) findViewById(R.id.switch_todoItem_Button);
+
+        int permissionCheck = ContextCompat.checkSelfPermission(Contacts.this, Manifest.permission.READ_CONTACTS);
+        if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
+
+        } else if(permissionCheck == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(Contacts.this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSION_REQUEST_CONTACTS);
+        }
 
         this.initContacts();
 
