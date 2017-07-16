@@ -42,17 +42,24 @@ public class ContactList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 boolean check = false;
                 for(long e : selectedContacts) {
-                    if(e == list.get(position).getId()) {
+                    if(e == list.get((int)id).getId()) {
                         check = true;
                         break;
                     }
                 }
-                if(!check) {
-                    selectedContacts.add(list.get(position).getId());
-                    ((TextView)contactList.getChildAt(position).findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.black));
+                /*if(!check) {
+                    selectedContacts.add(list.get((int)id).getId());
+                    ((TextView)contactList.getChildAt((int)id).findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.black));
                 } else {
-                    selectedContacts.remove(list.get(position).getId());
-                    ((TextView)contactList.getChildAt(position).findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.lightGrey));
+                    selectedContacts.remove((long)list.get((int)id).getId());
+                    ((TextView)contactList.getChildAt((int)id).findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.lightGrey));
+                }*/
+                if(!check) {
+                    selectedContacts.add(list.get((int)id).getId());
+                    ((TextView)view.findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.black));
+                } else {
+                    selectedContacts.remove((long)list.get((int)id).getId());
+                    ((TextView)view.findViewById(R.id.contact_element_text_View)).setTextColor(getColor(R.color.lightGrey));
                 }
             }
         });
@@ -65,7 +72,7 @@ public class ContactList extends AppCompatActivity {
         });
     }
 
-    public ListAdapter readContacts() {
+    public ArrayAdapter<Contact> readContacts() {
         ContentResolver resolver = getContentResolver();
         Cursor cursor = resolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.Data.DISPLAY_NAME);
 
@@ -80,7 +87,7 @@ public class ContactList extends AppCompatActivity {
             cursor.moveToNext();
         }
         cursor.close();
-        final ListAdapter adapter = new ArrayAdapter<Contact>(this, R.layout.contact_layout, list){
+        final ArrayAdapter adapter = new ArrayAdapter<Contact>(this, R.layout.contact_layout, list){
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 boolean isSelected = false;
@@ -100,13 +107,17 @@ public class ContactList extends AppCompatActivity {
                         break;
                     }
                 }
-                if(!isSelected)
+                if(!isSelected) {
                     textView.setTextColor(getColor(R.color.lightGrey));
+                } else {
+                    textView.setTextColor(getColor(R.color.black));
+                }
 
                 return v;
             }
         };
 
+        adapter.setNotifyOnChange(true);
         return adapter;
     }
 
